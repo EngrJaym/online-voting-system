@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
     <link rel="stylesheet" href="/css/style.css">
     <title>Your Web App</title>
     <!-- Bootstrap CSS -->
@@ -31,10 +31,10 @@
                     <a class="nav-link active" href="#">Home</a>
                 </li>
                 <li class="nav-item mx-3">
-                    <a class="nav-link" href="#">Features</a>
+                    <a class="nav-link" href="#features">Features</a>
                 </li>
                 <li class="nav-item mx-3">
-                    <a class="nav-link" href="#">How to Use</a>
+                    <a class="nav-link" href="#third-row">How to Use</a>
                 </li>
                 <li class="nav-item mx-3">
                     <a class="nav-link" href="#">About Us</a>
@@ -52,7 +52,7 @@
         </div>
     </nav>
     <!-- First Row -->
-    <div class="row justify-content-evenly">
+    <div class="row justify-content-evenly row-fullscreen">
         <div class="col-md-5 my-auto">
             <div class="container" id="headerText">
                 <h2 class="h1 text-white">Establish secure, cloud-based elections effortlessly.</h2>
@@ -70,7 +70,7 @@
     <div class="container text-center">
         <h1 class="h1 text-dark m-auto" id="features">FEATURES</h1>
     </div>
-    <div class="container border">
+    <div class="container">
         <div class='row justify-content-evenly bg-white py-auto' id="second-row">
 
             <div class="col-md-4">
@@ -115,7 +115,7 @@
                 </div>
                 <div class="container text-center pb-5" id="feature-card">
                     <i class="bi bi-clouds text-primary"></i>
-                    <h1 class="h1 text-dark">Cloud-based Platform</h1>
+                    <h1 class="h1 text-dark">Cloud-based</h1>
                     <p class="text-dark">This system upholds robust security measures to safeguard the integrity and
                         confidentiality of the entire voting experience.</p>
                 </div>
@@ -125,25 +125,25 @@
 
 
     <!-- Third Row -->
-    <div class="container">
-        <div class='row justify-content-evenly py-auto' id="third-row">
 
-            <div class="col-md-8">
-                <div class="container" id="usage-text">
-                    <p class="h2">Creating a poll is <b>simple.</b></p>
-                    <p id="third-row-intro">You maintain full control throughout the entire process, making it simple to
-                        construct and tailor an election according to your preferences.</p>
-                    <div class="container d-flex inline my-3">
-                        <i class="fa-regular fa-rectangle-list text-primary my-auto mx-3"></i>
-                        <div class="container">
-                            <p class="h4">Constructing the Ballot</p>
-                            <p>Include questions in your ballot and attach options such as candidates, measures, and
-                                write-in fields to these questions. You can also enhance each entry with a photo and a
-                                brief
-                                biography.</p>
-                        </div>
+    <div class='row justify-content-evenly py-auto' id="third-row">
+
+        <div class="col-md-8">
+            <div class="container mb-5" id="usage-text">
+                <p class="h2">Creating a poll is <b>simple.</b></p>
+                <p id="third-row-intro">You maintain full control throughout the entire process, making it simple to
+                    construct and tailor an election according to your preferences.</p>
+                <div class="container d-flex inline my-3">
+                    <i class="fa-regular fa-rectangle-list text-primary my-auto mx-3"></i>
+                    <div class="container">
+                        <p class="h4">Constructing the Ballot</p>
+                        <p>Include questions in your ballot and attach options such as candidates, measures, and
+                            write-in fields to these questions. You can also enhance each entry with a photo and a
+                            brief
+                            biography.</p>
                     </div>
                 </div>
+
                 <div class="container d-flex inline mb-4">
                     <i class="fa-solid fa-users text-primary my-auto mx-3" id="people"></i>
                     <div class="container">
@@ -170,9 +170,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
+
     </div>
+
 
 
 </body>

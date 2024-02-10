@@ -1,10 +1,17 @@
 body{
     overflow-x: hidden;
 }
+.nav-link{
+    color: white;
+    transition: transform 1s ease-in-out;
+}
+.nav-link:hover{
+    transform: scale(1.1);
+}
 #headerText{
     width: 90%;
 }
-.row{
+.row-fullscreen{
     background-color: #212529;
     height: 90vh;
 }
