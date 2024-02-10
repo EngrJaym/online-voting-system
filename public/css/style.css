@@ -1,0 +1,66 @@
+body{
+    overflow-x: hidden;
+}
+#headerText{
+    width: 90%;
+}
+.row{
+    background-color: #212529;
+    height: 90vh;
+}
+
+#votebox{
+    width: 70%;
+    height: auto;
+}
+#features{
+    padding: 70px 0;
+}
+i{
+    font-size: 70px;
+}
+#usage-text{
+    width: 85%;
+    padding-top: 50px;
+    padding-left: 50px;
+}
+#third-row{
+    background-color: #f2f2f2;
+}
+#third-row-intro{
+    font-size: 16px;
+}
+#people{
+    font-size: 65px;
+}
+#rocket{
+    font-size: 80px;
+}
+#graph{
+    font-size: 92px;
+}
+
+@media (max-width: 768px){
+    .navbar-nav {
+        text-align: center;
+        margin: auto;
+    }
+    #votebox{
+        height: 300px;
+        width: auto;
+    }
+    #registerbtn{
+        margin-left: 15px;
+        margin-top: 10px;
+    }
+    #headerText{
+        text-align: center;
+    }
+    .row{
+        padding-top: 20px;
+    }
+    #features{
+        padding-top: 50px;
+        padding-bottom: 30px;
+    }
+}

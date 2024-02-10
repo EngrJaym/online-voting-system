@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Your Web App</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+        integrity="sha384-4LISF5TTJX/fLmGSxO53rV4miRxdg84mZsxmO8Rx5jGtp/LbrixFETvWa5a6sESd" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand ms-5 text-white" href="#">
+            <img src="img/logo.png" alt="SmartPolls" height="auto" width="200px">
+        </a>
+        <button class="navbar-toggler me-5" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-3">
+                    <a class="nav-link active" href="#">Home</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">How to Use</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">About Us</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto" id="buttonGroup">
+                <li class="nav-item"><a type="button" class="btn btn-outline-light mx-3" href="#"
+                        id="loginbtn">Login</a></li>
+                <li class="nav-item"><a type="button" class="btn btn-outline-light me-3" href="#"
+                        id="registerbtn">Register</a></li>
+            </ul>
+
+
+        </div>
+    </nav>
+    <!-- First Row -->
+    <div class="row justify-content-evenly">
+        <div class="col-md-5 my-auto">
+            <div class="container" id="headerText">
+                <h2 class="h1 text-white">Establish secure, cloud-based elections effortlessly.</h2>
+                <p class="text-white">Generate an election for your school or organization instantly, enabling voters to
+                    cast their votes from any location using any device.</p>
+                <a type="button" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+        <div class="col-md-5 text-center my-auto p-5">
+            <img src="/img/votebox.png" alt="vote box" class="img" id="votebox">
+        </div>
+    </div>
+    <!-- Second Row -->
+
+    <div class="container text-center">
+        <h1 class="h1 text-dark m-auto" id="features">FEATURES</h1>
+    </div>
+    <div class="container border">
+        <div class='row justify-content-evenly bg-white py-auto' id="second-row">
+
+            <div class="col-md-4">
+                <div class="container text-center" id="feature-card">
+                    <i class="bi bi-database-lock text-primary"></i>
+                    <h1 class="h1 text-dark">Secure Voting</h1>
+                    <p class="text-dark">Every voter possesses an exclusive "Voter ID" and "Voter Key," ensuring that
+                        each
+                        individual can cast only a single vote.</p>
+                </div>
+
+                <div class="container text-center" id="feature-card">
+                    <i class="bi bi-bar-chart-line text-primary"></i>
+                    <h1 class="h1 text-dark">Automated Results</h1>
+                    <p class="text-dark">The system automatically computes election outcomes and displays them through
+                        visually appealing charts.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="container text-center" id="feature-card">
+                    <i class="bi bi-phone text-primary"></i>
+                    <h1 class="h1 text-dark">Accessibility</h1>
+                    <p class="text-dark">Voting processes are tailored for both desktop and mobile platforms, allowing
+                        voters to cast their votes through a web browser.</p>
+                </div>
+                <div class="container text-center" id="feature-card">
+                    <i class="bi bi-brush text-primary"></i>
+                    <h1 class="h1 text-dark">Customized Styling</h1>
+                    <p class="text-dark">Make your election uniquely yours by adding your organization's logo and
+                        choosing
+                        specific color scheme.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="container text-center" id="feature-card">
+                    <i class="bi bi-filetype-exe text-primary"></i>
+                    <h1 class="h1 text-dark">Import Voters</h1>
+                    <p class="text-dark">Streamline the process and save time by effortlessly importing your voters and
+                        ballot details from an Excel spreadsheet file.</p>
+                </div>
+                <div class="container text-center pb-5" id="feature-card">
+                    <i class="bi bi-clouds text-primary"></i>
+                    <h1 class="h1 text-dark">Cloud-based Platform</h1>
+                    <p class="text-dark">This system upholds robust security measures to safeguard the integrity and
+                        confidentiality of the entire voting experience.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Third Row -->
+    <div class="container">
+        <div class='row justify-content-evenly py-auto' id="third-row">
+
+            <div class="col-md-8">
+                <div class="container" id="usage-text">
+                    <p class="h2">Creating a poll is <b>simple.</b></p>
+                    <p id="third-row-intro">You maintain full control throughout the entire process, making it simple to
+                        construct and tailor an election according to your preferences.</p>
+                    <div class="container d-flex inline my-3">
+                        <i class="fa-regular fa-rectangle-list text-primary my-auto mx-3"></i>
+                        <div class="container">
+                            <p class="h4">Constructing the Ballot</p>
+                            <p>Include questions in your ballot and attach options such as candidates, measures, and
+                                write-in fields to these questions. You can also enhance each entry with a photo and a
+                                brief
+                                biography.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container d-flex inline mb-4">
+                    <i class="fa-solid fa-users text-primary my-auto mx-3" id="people"></i>
+                    <div class="container">
+                        <p class="h4">Adding Voters</p>
+                        <p>You have the authority to determine who is eligible to participate in your elections. Whether
+                            adding voters individually or importing them from a spreadsheet, the process is entirely
+                            within your control.</p>
+                    </div>
+                </div>
+                <div class="container d-flex inline my-4">
+                    <i class="fa-solid fa-rocket text-primary my-auto mx-3" id="rocket"></i>
+                    <div class="container">
+                        <p class="h4">Initiating the Election</p>
+                        <p>Once you have finalized the customization of the election, you can choose to schedule a
+                            start/end date or launch it immediately.</p>
+                    </div>
+                </div>
+                <div class="container d-flex inline my-4">
+                    <i class="fa-solid fa-square-poll-vertical text-primary my-auto mx-3" id="graph"></i>
+                    <div class="container">
+                        <p class="h4">Monitoring Results</p>
+                        <p>Keep track of the election results in real-time. At the conclusion of the election, you have
+                            the flexibility to publish and share the results with your voters as desired.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>
