@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Ballot = require('../models/ballot');
 
-const homeController = require('../controllers/homeController');
-router.get('/', homeController.showBallot)
+const CRUDController = require('../controllers/CRUDcontroller');
+router.get('/', CRUDController.showBallot)
 
 router.post('/submit-ballot',async (req,res) => {
     try {
