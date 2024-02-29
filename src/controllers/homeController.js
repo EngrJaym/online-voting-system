@@ -1,8 +1,7 @@
 const path = require('path');
 const homeController = {
     showHomepage: (req, res) => {
-        res.sendFile(path.join(__dirname, "..", "..", "public", "html", "index.html"));
-        console.log(path.join(__dirname, "..", "..", "public", "html", "index.html"))
+        res.render('index');
         
     },
     showElectionConfig: (req, res) => {

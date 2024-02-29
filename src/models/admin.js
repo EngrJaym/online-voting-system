@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const UserSchema = new mongoose.Schema({
+const AdminSchema = new mongoose.Schema({
 
     email:{
         type: String,
@@ -25,11 +25,8 @@ const UserSchema = new mongoose.Schema({
     userType:{
         type: String,
         required: true
-    },
-    organization:{
-        type: [String]
     }
 })
 
-const userModel = mongoose.model('User', UserSchema, 'Users');
-module.exports = userModel;
+const adminModel = mongoose.model('Admin', AdminSchema, 'Administrators');
+module.exports = adminModel;

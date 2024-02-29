@@ -1,74 +1,111 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/users');
+const Admin = require('../models/admin');
+const Voter = require('../models/voters');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
+const path = require('path');
 
 const homeController = require('../controllers/homeController');
+
+function capsAll(str){
+    return str.toUpperCase();
+}
+
 router.get('/', homeController.showHomepage)
+
+router.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'about.html'));
+})
 
 router.get('/signup', homeController.showSignupPage)
 router.post('/signup/admin', async (req, res) => {
-    const { email, password, confirmPassword, firstName, middleName, lastName, organization } = req.body;
-    const existingName = await User.findOne({ firstName: firstName, middleName: middleName, lastName: lastName });
-    const existingEmail = await User.findOne({ email: email });
+    const { regEmail, password, confirmPassword, firstName , middleName, lastName } = req.body;
+    const existingName = await Admin.findOne({ firstName: firstName, middleName: middleName, lastName: lastName });
+    const existingEmail = await Admin.findOne({ email: regEmail });
     const userType = 'admin';
-    console.log(req.body);
-    let errors = [];
+    let registerErrors = [];
 
     if (existingName) {
-        errors.push({ msg: 'User already registered' })
+        registerErrors.push({ msg: 'User with this name is already registered' })
     }
     if (existingEmail) {
-        errors.push({ msg: 'Email address already in use' })
+        registerErrors.push({ msg: 'Email address already in use' })
     }
     if (password.length < 6) {
-        errors.push({ msg: 'Password must be at least 6 characters' })
+        registerErrors.push({ msg: 'Password must be at least 6 characters' })
     }
     if (password !== confirmPassword) {
-        errors.push({ msg: 'Passwords do not match' })
+        registerErrors.push({ msg: 'Passwords do not match' })
     }
-    if (errors.length === 0) {
+
+    if (registerErrors.length === 0) {
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
-            const newUser = await User.create({
-                email: email, password: hashedPassword,
-                firstName: firstName, middleName: middleName, lastName: lastName, organization: organization, userType: userType
+            const newUser = await Admin.create({
+                email: regEmail, password: hashedPassword,
+                firstName: capsAll(firstName), middleName: capsAll(middleName), lastName: capsAll(lastName), userType: userType
             });
-            res.status(201).send('User successfully registered.')
+            let errors = [];
+            errors.push({msg: 'User successfully registered! You can now log in'})
+            res.render('index', {errors});
+
         } catch (error) {
             console.error("Error creating user: ", error);
             res.status(500).send('Error creating User.', error);
         }
+
     } else {
-        console.log(errors);
+        console.log(registerErrors);
         res.status(400);
-        res.render('signup', {
-            errors, email, firstName, middleName, lastName, organization
+        res.render('index', {
+            registerErrors, regEmail, firstName, middleName, lastName
         });
     }
+});
 
-})
-router.get('/login', homeController.showLoginPage)
-
-router.post('/login', async (req, res) => {
-    let { email, password, userType } = req.body
-    let existingUser = await User.findOne({ email: email, userType: userType });
-
+router.post('/login/admin', async (req, res) => {
+    let { email, password } = req.body
+    console.log(req.body)
+    let userType = 'admin';
+    let existingUser = await Admin.findOne({ email: email, userType: userType });
+    let errors = [];
     if (existingUser) {
         let passed = await bcrypt.compare(password, existingUser.password);
         if (passed) {
             if (userType === 'admin') {
-                res.send('Logged in as Admin.');
+                console.log('Logged in as admin...');
+                req.session.user = existingUser;
+                console.log("User logged in: ", req.session.user);
+                res.redirect('/admin/dashboard');
+
             }
             else {
                 res.send('Logged in as Voter.');
             }
         }
+        else {
+            errors.push({ msg: 'Invalid Password' });
+            res.render('index', { errors, email });
+        }
     }
     else {
-        res.send("Account doesnt exist.");
+        errors.push({ msg: "Account doesn't exist" });
+        res.render('index', { errors });
     }
 
 });
+
+router.get('/voter', (req, res) => {
+    res.render('indexVoter');
+})
+
+router.post('/login/voter',async (req, res) => {
+    const { studentNumber } = req.body;
+    let userType = 'voter';
+    let existingUser = await Voter.findOne({ email: email, userType: userType });
+    let errors = [];
+})
+
 router.get('/electionconfig', homeController.showElectionConfig)
 module.exports = router;

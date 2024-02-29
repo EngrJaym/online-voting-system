@@ -8,15 +8,19 @@
 
 <body>
 
-    <form method="post" action="/election/config">
+    <form method="post" action="/admin/createElection">
         <h1>CONFIGURE ELECTION</h1>
-        <label for="ElectionName">Election Name: </label>
-        <input type="text" name="ElectionName" id="ElectionName">
-        <label for="PositionTitle">Position Title:</label>
-        <input type="text" name="PositionTitle" id="PositionTitle">
-        <label for="CandidateName">Candidate Name: </label>
-        <input type="text" name="CandidateName" id="CandidateName">
-        <button type="submit">Submit</button>
+        <label for="electionTitle">Election Title</label>
+            <input type="text" id="electionTitle" name="electionTitle" required><br>
+            <label for="startDate">Start Date</label>
+            <input type="datetime-local" id="startDate" name="startDate" required>
+            <label for="endDate">End Date</label>
+            <input type="datetime-local" id="endDate" name="endDate" required>
+        <br>
+        <a href="#">Build your Ballot</a><br>
+        <label for="excelFile">Add Voters or Upload voters list in excel format: </label>
+        <input type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls"><br>
+        <button type="submit">Launch Election</button>
     </form>
 
 </body>
