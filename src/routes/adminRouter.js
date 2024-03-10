@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require('path');
 const moment = require('moment-timezone');
 const Election = require('../models/election');
+const Ballot = require('../models/ballot');
 
 router.get('/dashboard', async (req, res) => {
     if (req.session.user) {
@@ -32,17 +33,10 @@ router.get('/logout', (req, res) => {
 });
 
 
-router.post('/config', (req, res) => {
-    try {
-        res.send(req.body);
-    } catch (error) {
-        console.log(error)
-    }
-})
-
 router.get('/createElection', (req, res) => {
-    res.render('electionConfig');
+    res.render('electionTitle');
 });
+
 
 router.post('/createElection', async (req, res) => {
     const { startDate, endDate, electionTitle } = req.body;
@@ -65,7 +59,7 @@ router.post('/createElection', async (req, res) => {
         try {
             let creatorEmail = req.session.user.email;
             const newElection = await Election.create({ electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ, creator: creatorEmail });
-            res.redirect('/admin/dashboard');
+            res.render('electionConfig', {electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ});
         } catch (error) {
             console.error("Error creating election: ", error);
             res.status(500).send("Error creating election: ", error);
@@ -73,4 +67,26 @@ router.post('/createElection', async (req, res) => {
     }
 });
 
+router.get('/editBallot', async (req, res) => {
+    const electionTitle = req.query.electionTitle;
+    const startDateTZ = req.query.startDate;
+    const endDateTZ = req.query.endDate;
+   let currElection = await Election.find({electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ, creator: req.session.user.email});
+    res.render('ballotConfig', {electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ});
+});
+
+router.post('/editBallot', async (req, res) => {
+    const { position, electionTitle, startDate, endDate } = req.body;
+    console.log("BODY REQUEST: ",position);
+    console.log(req.session.user);
+    const currElection = await Election.find({electionTitle: electionTitle, startDate: startDate, endDate: endDate, creator: req.session.user.email});
+
+    if (currElection){
+    position.forEach(async function (pos){
+        const editBallot = await Ballot.create({position: pos.title, candidates: pos.candidates, creator: req.session.user.email});
+    });
+};
+    
+    res.render('electionConfig', { position: position });
+});
 module.exports = router;

@@ -21,10 +21,6 @@ const AdminSchema = new mongoose.Schema({
     lastName:{
         type: String,
         required: true
-    },
-    userType:{
-        type: String,
-        required: true
     }
 })
 

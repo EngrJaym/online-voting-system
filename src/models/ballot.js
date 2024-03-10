@@ -2,18 +2,23 @@ const { Timestamp } = require('mongodb');
 const mongoose = require('mongoose');
 
 const ballotSchema = new mongoose.Schema({
-    voterName: {
-        type: String, required: true
+    position: {
+        type: String, 
+        required: true
     },
-    candidateName: {
+    candidates: {
+        type: [String],
+        required: true
+    },
+    election: {
+        type: String
+    },
+    creator: {
         type: String,
         required: true
     },
-    timeStamp: {
-        type: Date,
-        default: Date.now
-    }
+
 });
 
-const Ballot = mongoose.model('Ballot', ballotSchema, 'President');
+const Ballot = mongoose.model('Ballot', ballotSchema, 'Ballots');
 module.exports = Ballot;

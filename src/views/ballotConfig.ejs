@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Ballot</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h1>Edit Ballot</h1>
+
+        <form id="ballotForm" method="post" action="/admin/editBallot">
+            <div id="positionsContainer">
+                <div class="form-group">
+                    <h3>Election Title: <input type="text" name="electionTitle" value="<%= electionTitle %>" disabled></h3>
+                    <h3>Start Date: <input type="text" name="startDate" value="<%= startDate %>" disabled></h3>
+                    <h3>End Date: <input type="text" name="endDate" value="<%= endDate %>" disabled></h3>
+                </div>
+                <div class="form-group">
+                    <label for="position1">Position Title:</label>
+                    <input type="text" class="form-control position-title" name="position[0][title]" required>
+                    <label for="position1Candidates">Candidates:</label>
+                    <div id="position1Candidates">
+                        <input type="text" class="form-control mb-2" name="position[0][candidates][0]" required>
+                    </div>
+                    <button type="button" class="btn btn-secondary addCandidate" data-position="1">Add
+                        Candidate</button>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary mt-3" id="addPosition">Add Position</button>
+            <button type="submit" class="btn btn-success mt-3">Save Changes</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+       
+    $(document).ready(function() {
+        let positionCount = 0;
+        let candidateCount = 0;
+
+        // Add candidate button functionality
+        candidateCount++;
+        $(document).on('click', '.addCandidate', function() {
+            const positionIndex = $(this).data('position');
+            const newPositionCandidateInput = `
+                <input type="text" class="form-control mb-2" name="position[${positionCount}][candidates][${candidateCount}]" required>
+            `;
+            $(this).before(newPositionCandidateInput);
+        });
+
+        // Add position button functionality
+        $('#addPosition').click(function() {
+            positionCount++;
+            const newPositionInput = `
+                <div class="form-group">
+                    <label for="position${positionCount}">Position Title:</label>
+                    <input type="text" class="form-control position-title" id="position${positionCount}" name="position[${positionCount}][title]" required>
+                    <label for="position${positionCount}Candidates">Candidates:</label>
+                    <div id="position${positionCount}Candidates">
+                        <input type="text" class="form-control mb-2" name="position[${positionCount}][candidates][]" required>
+                    </div>
+                    <button type="button" class="btn btn-secondary addCandidate" data-position="${positionCount}">Add Candidate</button>
+                </div>
+            `;
+            $('#positionsContainer').append(newPositionInput);
+        });
+    });
+
+    </script>
+
+
+</body>
+
+</html>

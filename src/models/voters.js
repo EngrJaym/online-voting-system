@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const voterSchema = new mongoose.Schema({
     studentNumber:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     firstName:{
         type: String,

@@ -12,20 +12,22 @@ function capsAll(str){
     return str.toUpperCase();
 }
 
-router.get('/', homeController.showHomepage)
+var signupClicked = false;
+
+router.get('/',  (req, res) => {
+    res.render('index', {signupClicked})
+})
 
 router.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'about.html'));
 })
 
-router.get('/signup', homeController.showSignupPage)
 router.post('/signup/admin', async (req, res) => {
     const { regEmail, password, confirmPassword, firstName , middleName, lastName } = req.body;
-    const existingName = await Admin.findOne({ firstName: firstName, middleName: middleName, lastName: lastName });
+    const existingName = await Admin.findOne({ firstName: capsAll(firstName), middleName: capsAll(middleName), lastName: capsAll(lastName) });
     const existingEmail = await Admin.findOne({ email: regEmail });
     const userType = 'admin';
     let registerErrors = [];
-
     if (existingName) {
         registerErrors.push({ msg: 'User with this name is already registered' })
     }
@@ -48,7 +50,7 @@ router.post('/signup/admin', async (req, res) => {
             });
             let errors = [];
             errors.push({msg: 'User successfully registered! You can now log in'})
-            res.render('index', {errors});
+            res.render('index', {errors, signupClicked});
 
         } catch (error) {
             console.error("Error creating user: ", error);
@@ -59,7 +61,7 @@ router.post('/signup/admin', async (req, res) => {
         console.log(registerErrors);
         res.status(400);
         res.render('index', {
-            registerErrors, regEmail, firstName, middleName, lastName
+            registerErrors, regEmail, firstName, middleName, lastName, signupClicked: true
         });
     }
 });
@@ -86,12 +88,12 @@ router.post('/login/admin', async (req, res) => {
         }
         else {
             errors.push({ msg: 'Invalid Password' });
-            res.render('index', { errors, email });
+            res.render('index', { errors, email, signupClicked});
         }
     }
     else {
         errors.push({ msg: "Account doesn't exist" });
-        res.render('index', { errors });
+        res.render('index', { errors, signupClicked});
     }
 
 });
