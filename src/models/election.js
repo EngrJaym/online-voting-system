@@ -14,7 +14,7 @@ const electionSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    ballot: {
+    ballots: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Ballot'}]
     },
     voters:{

@@ -58,8 +58,8 @@ router.post('/createElection', async (req, res) => {
     else {
         try {
             let creatorEmail = req.session.user.email;
-            const newElection = await Election.create({ electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ, creator: creatorEmail });
-            res.render('electionConfig', {electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ});
+            const newElection = await Election.create({ electionTitle: electionTitle, startDate: startDate, endDate: endDate, creator: creatorEmail });
+            res.render('electionConfig', {electionTitle: electionTitle, startDate: startDate, endDate: endDate});
         } catch (error) {
             console.error("Error creating election: ", error);
             res.status(500).send("Error creating election: ", error);
@@ -69,24 +69,37 @@ router.post('/createElection', async (req, res) => {
 
 router.get('/editBallot', async (req, res) => {
     const electionTitle = req.query.electionTitle;
-    const startDateTZ = req.query.startDate;
-    const endDateTZ = req.query.endDate;
-   let currElection = await Election.find({electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ, creator: req.session.user.email});
-    res.render('ballotConfig', {electionTitle: electionTitle, startDate: startDateTZ, endDate: endDateTZ});
+    let startDate = req.query.startDate;
+    let endDate = req.query.endDate;
+    let currElection = await Election.find({electionTitle: electionTitle, startDate: startDate, endDate: endDate, creator: req.session.user.email});
+    res.render('ballotConfig', {electionTitle: electionTitle, startDate: startDate, endDate: endDate});
 });
-
+ 
 router.post('/editBallot', async (req, res) => {
-    const { position, electionTitle, startDate, endDate } = req.body;
+    const { position } = req.body;
+    const electionTitle = req.query.electionTitle;
+    let startDate = req.query.startDate;
+    let endDate = req.query.endDate;
     console.log("BODY REQUEST: ",position);
-    console.log(req.session.user);
-    const currElection = await Election.find({electionTitle: electionTitle, startDate: startDate, endDate: endDate, creator: req.session.user.email});
+    const currElection = await Election.findOne({electionTitle: electionTitle, startDate: startDate, endDate: endDate, creator: req.session.user.email});
+    console.log("NEW ELECTION: ",currElection);
 
     if (currElection){
     position.forEach(async function (pos){
-        const editBallot = await Ballot.create({position: pos.title, candidates: pos.candidates, creator: req.session.user.email});
-    });
+        const newBallot = await Ballot.create({position: pos.title, candidates: pos.candidates, creator: req.session.user.email});
+        await Election.findByIdAndUpdate(currElection._id, { $push: { ballots: newBallot._id } }, { new: true });
+    })
 };
-    
-    res.render('electionConfig', { position: position });
+    async function showBallots() {
+        console.log('LIST OF BALLOTS: ');
+        for (let ballotID of currElection.ballots){
+            let ballotObject = await Ballot.findById(ballotID);
+            console.log(ballotObject);
+        };
+    };
+
+    showBallots();
+
+    res.render('electionConfig', { position: position, electionTitle: electionTitle, startDate: startDate, endDate: endDate });
 });
 module.exports = router;
