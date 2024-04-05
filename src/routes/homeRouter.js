@@ -68,44 +68,56 @@ router.post('/signup/admin', async (req, res) => {
 
 router.post('/login/admin', async (req, res) => {
     let { email, password } = req.body;
-    let userType = 'admin';
-    let existingUser = await Admin.findOne({ email: email, userType: userType });
+    let existingAdmin = await Admin.findOne({ email: email});
     let errors = [];
-    if (existingUser) {
-        let passed = await bcrypt.compare(password, existingUser.password);
+    if (existingAdmin) {
+        let passed = await bcrypt.compare(password, existingAdmin.password);
         if (passed) {
-            if (userType === 'admin') {
-                console.log('Logged in as admin...');
-                req.session.user = existingUser;
-                console.log("User logged in: ", req.session.user);
+                req.session.user = existingAdmin;
                 res.redirect('/admin/dashboard');
-
-            }
-            else {
-                res.send('Logged in as Voter.');
-            }
         }
         else {
             errors.push({ msg: 'Invalid Password' });
-            res.render('index', { errors, email, signupClicked});
+            res.render('index', { errors, email});
         }
     }
     else {
         errors.push({ msg: "Account doesn't exist" });
-        res.render('index', { errors, signupClicked});
+        res.render('index', { errors});
+        console.log(errors)
     }
 
 });
 
 router.get('/voter', (req, res) => {
-    res.render('indexVoter');
+    const error = req.query.error;
+    if (error){
+        res.render('indexVoter', {errors: [{msg: `${error}`}]});
+    }else{
+        res.render('indexVoter');
+    }
 })
 
 router.post('/login/voter',async (req, res) => {
-    const { studentNumber } = req.body;
-    let userType = 'voter';
-    let existingUser = await Voter.findOne({ email: email, userType: userType });
-    let errors = [];
+
+    const { studentNumber, password } = req.body;
+    let existingVoter = await Voter.findOne({studentNumber: studentNumber});
+    let error = '';
+    if (existingVoter){
+        let passed = await bcrypt.compare(password, existingVoter.password);
+        if (passed){
+            req.session.user = existingVoter;
+            res.redirect('/voter/dashboard');
+        }
+        else{
+            error = 'Invalid Password';
+            res.redirect(`/voter?error=${error}`);
+        }
+    }else{
+        error = "Account doesn't exist";
+        res.redirect(`/voter?error=${error}`);
+    }
+    
 })
 
 router.get('/electionconfig', homeController.showElectionConfig)

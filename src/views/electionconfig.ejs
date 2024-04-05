@@ -9,52 +9,200 @@
 </head>
 
 <body>
-
-    <form method="post" action="/admin/editElection">
+    <div class="container my-3">
         <h1>CONFIGURE ELECTION</h1>
-        <h3>Election Title: <%= electionTitle %></h3>
-        <h3>Start Date: <%= startDate %></h3>
-        <h3>End Date: <%= endDate %></h3>
+        <h3>Election Title: <%= electionTitle %>
+        </h3>
+        <h3>Start Date: <%= startDate %>
+        </h3>
+        <h3>End Date: <%= endDate %>
+        </h3>
         <br>
 
-        <% if (typeof position != 'undefined'){ %>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">Ballot</div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">Total Positions: <%= position.length %></div>
-                <% var sumOfCandidates = 0;
-                position.forEach(function(pos){
-                    let numOfCandidates = pos.candidates.length;
-                    sumOfCandidates += numOfCandidates
-                }); %>
-                <div class="col-sm-8">Total Candidates: <%= sumOfCandidates %></div>
-            </div>
-            <% position.forEach(function(pos) { %>
+        <% const startdate = new Date(startDate);
+         const isoStartDate = startdate.toISOString().slice(0,16); 
+         const enddate = new Date(endDate); 
+         const isoEndDate = enddate.toISOString().slice(0,16); %>
+         <a class="btn btn-primary" href="/admin/dashboard">Back to Dashboard</a>
+            <a class="btn btn-primary"
+                href="/admin/editElectionTitle?electionTitle=<%=electionTitle%>&startDate=<%=isoStartDate%>&endDate=<%=isoEndDate%>&electionId=<%=electionId%>">Edit Election Title and Dates</a>
+            
+     </div>
 
-            <div class="row">
-                <div class="col-sm-4"><%= pos.title %></div>
-                <div class="col-sm-8">
-                    <ul>
-                        <% pos.candidates.forEach(function(candidate) {%>
-                        <li><%= candidate %></li>
-                        <% }) %>
-                    </ul>
+    <div class="container my-5">
+        <p class="h2">Election Ballots</p>
+        <div class="row border">
+            <div class="col-sm-4">
+                <p class="fw-bold">Position</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="fw-bold">Candidates</p>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+        <% if (ballots.length !==0){ for (let ballot of ballots) { %>
+            <div class="row border">
+                <div class="col-sm-4">
+                    <p>
+                        <%=ballot.position%>
+                    </p>
+                </div>
+                <div class="col-sm-6">
+                    <p>
+                        <%=ballot.candidates%>
+                    </p>
+                </div>
+                <div class="col-sm-2">
+
+
+                    <div class="col-sm-2 text-center">
+                        <a class="btn btn-danger px-3" type="button" data-toggle="modal"
+                            data-target="#ModalId<%=ballot._id%>">Delete</a>
+                    </div>
+    
+                    <div class="modal fade" id="ModalId<%=ballot._id%>" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel<%=ballot._id%>" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-danger" id="exampleModalLabel<%=ballot._id%>">WARNING</h5>
+    
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to remove this ballot from election: <%=electionTitle%>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                    <a class="btn btn-primary"
+                                        href="/admin/deleteBallot?electionId=<%=electionId%>&ballotId=<%=ballot._id%>">Yes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
-            
-            <% }); 
-        };%>
+            <% }} else { %>
+                <div class="row border">
+                    <div class="col-sm-12 text-center">
+                        <p>No ballots yet.</p>
+                    </div>
+                </div>
+                <% } %>
+            <a class="btn btn-primary" href="/admin/editBallot?electionTitle=<%=electionTitle%>&startDate=<%=startDate%>&endDate=<%=endDate%>&electionId=<%=electionId%>">Add Ballot</a>
+
+    </div>
+
+    <form method="post" action="/admin/addVoters?electionId=<%=electionId%>">
+        <div class="container my-5">
+            <p class="h2">Add Voters</p>
+            <p>Reminder: Make sure your voters are already registered in the Voters database. If not,
+                register
+                your voters in the Admin's Dashboard page.</p>
+            <div class="form-group">
+                <%- include('./partials/loginErrors.ejs') %>
+                    <label for="studentNumbers">Add your Voters by their Student Number (new line per
+                        voter):</label>
+                    <textarea class="form-control" id="studentNumbers" name="studentNumbers" rows="5"
+                        required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Register Voters</button>
         </div>
-        <a class="btn btn-primary" href="/admin/editBallot?electionTitle=<%=electionTitle%>&startDate=<%=startDate%>&endDate=<%=endDate%>">Edit Ballot</a>
-        <h3>Add Voters</h3>
-        <label for="excelFile">Add Voters or Upload voters list in excel format: </label>
-        <input type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls"><br>
-        <button type="submit">Launch Election</button>
     </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <p class="h2 text-center m-5">Election Voters</p>
+    <div class="container mb-5">
+        <div class="row border">
+            <div class="col-sm-2">
+                <p class="fw-bold">STUDENT NUMBER</p>
+            </div>
+            <div class="col-sm-2">
+                <p class="fw-bold">FIRST NAME</p>
+            </div>
+            <div class="col-sm-2">
+                <p class="fw-bold">MIDDLE NAME</p>
+            </div>
+            <div class="col-sm-2">
+                <p class="fw-bold">LASTNAME</p>
+            </div>
+            <div class="col-sm-2">
+                <p class="fw-bold">PROGRAM</p>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+        <% if (electionVoters.length !==0){ for (let voter of electionVoters) { %>
+            <div class="row border">
+                <div class="col-sm-2">
+                    <p>
+                        <%= voter.studentNumber %>
+                    </p>
+                </div>
+                <div class="col-sm-2">
+                    <p>
+                        <%= voter.firstName %>
+                    </p>
+                </div>
+                <div class="col-sm-2">
+                    <p>
+                        <%= voter.middleName %>
+                    </p>
+                </div>
+                <div class="col-sm-2">
+                    <p>
+                        <%= voter.lastName %>
+                    </p>
+                </div>
+                <div class="col-sm-2">
+                    <p>
+                        <%= voter.program %>
+                    </p>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <a class="btn btn-danger px-3" type="button" data-toggle="modal"
+                        data-target="#ModalId<%=voter._id%>">Delete</a>
+                </div>
+
+                <div class="modal fade" id="ModalId<%=voter._id%>" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel<%=voter._id%>" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-danger" id="exampleModalLabel<%=voter._id%>">WARNING</h5>
+
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to remove this voter from election: <%=electionTitle%>?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                <a class="btn btn-primary"
+                                    href="/admin/deleteElectionVoter?electionId=<%=electionId%>&studentNumber=<%=voter.studentNumber%>">Yes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <% }} else { %>
+                <div class="row border">
+                    <div class="col-sm-12 text-center">
+                        <p>No registered voters yet.</p>
+                    </div>
+                </div>
+                <% } %>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

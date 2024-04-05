@@ -12,6 +12,7 @@
     <h1>Welcome to Admin's Dashboard, <%= firstName %>
             <%= lastName %>!</h1>
     <a href="/admin/createElection" class="btn btn-primary">Create New Election</a>
+    <a href="/admin/manageVoters" class="btn btn-primary">Manage Voters</a>
     <a href="/admin/logout" class="btn btn-primary">Logout</a>
     <hr>
     <h1>Election Record</h1>
@@ -24,7 +25,7 @@
         <div class="col-sm-1"></div>
     </div>
     <div class="row border">
-    <% const options = { 
+    <%const options = { 
         timeZone: 'Asia/Manila',
         hour12: true,
         hour: 'numeric',
@@ -34,7 +35,23 @@
         year: 'numeric'
      };
      const now = new Date();
-      for (const election of elections){ %>
+      for (const election of elections){
+        if (now < election.startDate){ 
+          var status = 'UPCOMING';
+          var btn = 'Update';
+          var url =  '/admin/updateElection?electionTitle=' + election.electionTitle + '&startDate=' + election.startDate + '&endDate=' + election.endDate + '&electionId=' + election._id;
+        }
+        else if (now > election.startDate && now > election.endDate){
+            var status = 'FINISHED';
+            var btn = 'View Final Results';
+            var url = '/admin/viewFinalResults';
+        }
+        else if (now > election.startDate && now < election.endDate){
+            var status = 'ONGOING';
+            var btn = 'View Partial Results';
+            var url = '/admin/viewPartialResults';
+        } 
+      %>
         
             <div class="col-sm-3">
                 <%= election.electionTitle %>
@@ -45,35 +62,43 @@
             <div class="col-sm-2">
                 <%= election.endDate.toLocaleString('en-US', options) %>
             </div>
-            <% if (now < election.startDate){ 
-                    var status = 'UPCOMING';
-                    var btn = 'Update';
-                    var url =  '/admin/updateElection?electionTitle=' + election.electionTitle + '&' + 'creator=' + election.creator;
-                }
-                else if (now > election.startDate && now > election.endDate){
-                    var status = 'FINISHED';
-                    var btn = 'View Final Results';
-                    var url = '/admin/viewFinalResults';
-                }
-                else if (now > election.startDate && now < election.endDate){
-                    var status = 'ONGOING';
-                    var btn = 'View Partial Results';
-                    var url = '/admin/viewPartialResults';
-                } %>
             <div class="col-sm-2 h5"><%= status %></div>
             <div class="col-sm-2">
                     <a class="btn py-0 w-100 <%= status === 'UPCOMING' ? 'btn-primary' : (status === 'FINISHED' ? 'btn-success' : 'btn-warning') %>"
                          href="<%= url %>"><%= btn %></a>
             </div>
+
             <div class="col-sm-1">
-                <a class="btn btn-danger py-0 w-100"><%= status === 'ONGOING' ? 'End' : 'Delete' %></a>
+                <a class="btn btn-danger py-0 w-100" type="button" data-toggle="modal" data-target="#ModalId<%=election._id%>"><%= status === 'ONGOING' ? 'End' : 'Delete' %></a>
+            </div>
+            <div class="modal fade" id="ModalId<%=election._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel<%=election._id%>" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title text-danger" id="exampleModalLabel<%=election._id%>">WARNING</h5>
+                      
+                    </div>
+                    <div class="modal-body">
+                      Are you sure you want to delete election: <%=election.electionTitle%> from your record?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                      <a class="btn btn-primary" href="/admin/deleteElection?electionId=<%=election._id%>">Yes</a>
+                    </div>
+                  </div>
+                </div>
             </div>
             <% }; %>
-        </div>
+            
+          </div>
 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
                 crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

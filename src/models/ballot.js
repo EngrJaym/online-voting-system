@@ -10,9 +10,6 @@ const ballotSchema = new mongoose.Schema({
         type: [String],
         required: true
     },
-    election: {
-        type: String
-    },
     creator: {
         type: String,
         required: true
@@ -20,5 +17,26 @@ const ballotSchema = new mongoose.Schema({
 
 });
 
+const votesSchema = new mongoose.Schema({
+    electionId: {
+        type: String,
+        required: true
+    },
+    position: {
+        type: String, 
+        required: true
+    },
+    candidates: {
+        type: [String],
+        required: true
+    },
+    creator: {
+        type: String,
+        required: true
+    }
+
+});
+
 const Ballot = mongoose.model('Ballot', ballotSchema, 'Ballots');
-module.exports = Ballot;
+const Votes = mongoose.model('Votes', votesSchema, 'Votes');
+module.exports = {Ballot, Votes};

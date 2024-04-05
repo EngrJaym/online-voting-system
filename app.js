@@ -12,7 +12,7 @@ mongoose.connect(uri).then(()=> console.log('Connected to Database!')).catch((er
 
 //Middleware
 const homeRouter = require('./src/routes/homeRouter');
-const ballotRouter = require('./src/routes/ballotRouter');
+const voterRouter = require('./src/routes/voterRouter');
 const adminRouter = require('./src/routes/adminRouter');
 const { error } = require('console');
 
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 
 //Routes
 app.use('/', homeRouter);
-app.use('/ballot', ballotRouter);
+app.use('/voter', voterRouter);
 app.use('/admin', adminRouter);
 
 const port = process.env.port || 5000;
