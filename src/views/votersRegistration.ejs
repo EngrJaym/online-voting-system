@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm navbar-dark border">
+        <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
+        <p class="h5 ms-auto me-5">Voters Registration</p>
+      </nav>
+  
+      <nav class="navbar navbar-expand-sm bg-primary">
+  
+        <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav py-2 mx-auto">
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom " href="/admin/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom" href="/admin/createElection?exists=false">Create New Election</a>
+            </li>
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom" href="/admin/manageVoters">Registered Voters</a>
+            </li>
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom btn-active" href="/admin/votersRegistration">Voters Registration</a>
+            </li>
+            
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom" href="/admin/logout">Logout</a>
+            </li>
+  
+          </ul>
+        </div>
+      </nav>
+
+
+    <div class="container my-5 w-50 border p-3">
+        <h2 class="mb-4 text-center">Voters Registration Form</h2>
+        <%- include('./partials/loginErrors.ejs') %>
+        <form action="/admin/registerVoters" method="post" class="form-group">
+
+        <div class="row">
+            <div class="col-sm-4 my-3">
+                <label for="firstName" class="form-label">First Name:</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" value="<%= typeof firstName != 'undefined' ? firstName : '' %>" required>
+            </div>
+
+            <div class="col-sm-4 my-3">
+                <label for="middleName" class="form-label">Middle Name:</label>
+                <input type="text" class="form-control" id="middleName" name="middleName" value="<%= typeof middleName != 'undefined' ? middleName : '' %>" required>
+            </div>
+
+            <div class="col-sm-4 my-3">
+                <label for="lastName" class="form-label">Last Name:</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" value="<%= typeof lastName != 'undefined' ? lastName : '' %>" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 my-3">
+                <label for="studentNumber" class="form-label">Student Number:</label>
+                <input type="text" class="form-control" id="studentNumber" name="studentNumber" value="<%= typeof studentNumber != 'undefined' ? studentNumber: '' %>" required>
+            </div>
+            <div class="col-sm-4 my-3">
+                <label for="program" class="form-label">Program (e.g., BSCPE):</label>
+                <input type="text" class="form-control" id="program" name="program" value="<%= typeof program != 'undefined' ? program : '' %>" required>
+            </div>
+
+            <div class="col-sm-4 my-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" value="<%= typeof email != 'undefined' ? email : '' %>" required>
+            </div>
+        </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        
+        </form>
+    </div>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -9,25 +9,59 @@
 </head>
 
 <body>
-    <div class="container my-3">
-        <h1>CONFIGURE ELECTION</h1>
-        <h3>Election Title: <%= electionTitle %>
-        </h3>
-        <h3>Start Date: <%= startDate %>
-        </h3>
-        <h3>End Date: <%= endDate %>
-        </h3>
-        <br>
+    <%
+    const options = {
+        year: 'numeric', 
+        month: 'short', 
+        day: '2-digit',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+        timeZone: 'Asia/Manila' // Set the desired time zone
+    }
+    %>
 
-        <% const startdate = new Date(startDate);
-         const isoStartDate = startdate.toISOString().slice(0,16); 
-         const enddate = new Date(endDate); 
-         const isoEndDate = enddate.toISOString().slice(0,16); %>
-         <a class="btn btn-primary" href="/admin/dashboard">Back to Dashboard</a>
-            <a class="btn btn-primary"
-                href="/admin/editElectionTitle?electionTitle=<%=electionTitle%>&startDate=<%=isoStartDate%>&endDate=<%=isoEndDate%>&electionId=<%=electionId%>">Edit Election Title and Dates</a>
-            
-     </div>
+    <%  const startDateObject = new Date(startDate);
+         const endDateObject = new Date(endDate);
+    %>
+    <nav class="navbar navbar-expand-sm border bg-primary">
+        <a class="navbar-brand ms-5 text-white" href="#">DigiVote by URSM</a>
+        <p class="h5 ms-auto me-5 text-white">Configure Election</p>
+        <a class="btn btn-success me-5" href="/admin/saveElection?electionTitle=<%=electionTitle%>&startDate=<%=startDate%>&endDate=<%=endDate%>&electionId=<%=electionId%>">Launch Election</a>
+
+      </nav>
+      <%- include('./partials/launchErrors') %>
+      <div class="container my-5">
+      <div class="row">
+        <div class="col-sm-4">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th colspan="2" class="text-center">ELECTION SETTINGS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Election Title</th>
+                    <td><%= electionTitle %></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Start Date</th>
+                    <td><%= startDateObject.toLocaleString('en-US', options) %></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">End Date</th>
+                    <td><%= endDateObject.toLocaleString('en-US', options) %></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><a class="btn btn-primary text-center w-100" href="/admin/editElectionTitle?electionTitle=<%= electionTitle %>&startDate=<%= startDate %>&endDate=<%= endDate %>&electionId=<%=electionId%>">Edit</a></td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+      </div>
+    </div>
+       
 
     <div class="container my-5">
         <p class="h2">Election Ballots</p>

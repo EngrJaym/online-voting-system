@@ -2,30 +2,61 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
-    <h1>Welcome to Admin's Dashboard, <%= firstName %>
-            <%= lastName %>!</h1>
-    <a href="/admin/createElection" class="btn btn-primary">Create New Election</a>
-    <a href="/admin/manageVoters" class="btn btn-primary">Manage Voters</a>
-    <a href="/admin/logout" class="btn btn-primary">Logout</a>
-    <hr>
-    <h1>Election Record</h1>
-    <div class="row">
+  <% function capitalizeFirstLetter(str) { return str.charAt(0).toUpperCase() + str.slice(1); }; %>
+    <nav class="navbar navbar-expand-sm navbar-dark border">
+      <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
+      <p class="h5 ms-auto me-5">Welcome to Admin's Dashboard, <%= capitalizeFirstLetter(firstName) %>
+          <%= capitalizeFirstLetter(lastName) %>!</p>
+    </nav>
+
+    <nav class="navbar navbar-expand-sm bg-primary">
+
+      <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav py-2 mx-auto">
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom btn-active" href="/admin/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom" href="/admin/createElection?exists=false">Create New Election</a>
+          </li>
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom" href="/admin/manageVoters">Registered Voters</a>
+          </li>
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom" href="/admin/votersRegistration">Voters Registration</a>
+          </li>
+          
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom" href="/admin/logout">Logout</a>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+    <div class="container mx-auto my-5">
+      <p class="h3 text-center my-5">Election Record</p>
+      <div class="row">
         <div class="col-sm-3 h5">Election Title</div>
         <div class="col-sm-2 h5">Start Date</div>
         <div class="col-sm-2 h5">End Date</div>
         <div class="col-sm-2 h5">Status</div>
         <div class="col-sm-2"></div>
         <div class="col-sm-1"></div>
-    </div>
-    <div class="row border">
-    <%const options = { 
+      </div>
+
+      <% if (elections.length> 0){
+        const options = {
         timeZone: 'Asia/Manila',
         hour12: true,
         hour: 'numeric',
@@ -33,71 +64,100 @@
         day: 'numeric',
         month: 'short',
         year: 'numeric'
-     };
-     const now = new Date();
-      for (const election of elections){
-        if (now < election.startDate){ 
-          var status = 'UPCOMING';
-          var btn = 'Update';
-          var url =  '/admin/updateElection?electionTitle=' + election.electionTitle + '&startDate=' + election.startDate + '&endDate=' + election.endDate + '&electionId=' + election._id;
-        }
-        else if (now > election.startDate && now > election.endDate){
-            var status = 'FINISHED';
-            var btn = 'View Final Results';
-            var url = '/admin/viewFinalResults';
-        }
-        else if (now > election.startDate && now < election.endDate){
-            var status = 'ONGOING';
-            var btn = 'View Partial Results';
-            var url = '/admin/viewPartialResults';
-        } 
-      %>
-        
-            <div class="col-sm-3">
-                <%= election.electionTitle %>
-            </div>
-            <div class="col-sm-2">
-                <%= election.startDate.toLocaleString('en-US', options) %>
-            </div>
-            <div class="col-sm-2">
-                <%= election.endDate.toLocaleString('en-US', options) %>
-            </div>
-            <div class="col-sm-2 h5"><%= status %></div>
-            <div class="col-sm-2">
-                    <a class="btn py-0 w-100 <%= status === 'UPCOMING' ? 'btn-primary' : (status === 'FINISHED' ? 'btn-success' : 'btn-warning') %>"
-                         href="<%= url %>"><%= btn %></a>
-            </div>
+        };
+        const now = new Date();
+        for (const election of elections){
 
-            <div class="col-sm-1">
-                <a class="btn btn-danger py-0 w-100" type="button" data-toggle="modal" data-target="#ModalId<%=election._id%>"><%= status === 'ONGOING' ? 'End' : 'Delete' %></a>
-            </div>
-            <div class="modal fade" id="ModalId<%=election._id%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel<%=election._id%>" aria-hidden="true">
+          const ISOStartDate = election.startDate.toISOString().slice(0,16);
+          const ISOEndDate = election.endDate.toISOString().slice(0,16);
+          const localStartDate = new Date(ISOStartDate).toLocaleString('en-US', options);
+          const localEndDate = new Date(ISOEndDate).toLocaleString('en-US', options);
+
+        if (now < election.startDate){ 
+          var status='UPCOMING' ; var btn='Update' ; var
+          url='/admin/updateElection?electionTitle=' + election.electionTitle + '&startDate=' + ISOStartDate
+          + '&endDate=' + ISOEndDate + '&electionId=' + election._id; } 
+        else if (now> election.startDate && now >
+          election.endDate){
+          var status = 'FINISHED';
+          var btn = 'View Final Results';
+          var url = '/admin/viewFinalResults?electionId=' + election._id + '&status=FINISHED';
+          }
+        else if (now > election.startDate && now < election.endDate){ var status='ONGOING' ; var
+            btn='View Partial Results' ; var url='/admin/viewFinalResults?electionId=' + election._id
+            + '&status=ONGOING' ; } 
+            
+            %>
+            <div class="row border-top border-bottom">
+              <div class="col-sm-3 py-3">
+                <%= election.electionTitle %>
+              </div>
+              <div class="col-sm-2 py-3">
+                <%= localStartDate %>
+              </div>
+              <div class="col-sm-2 py-3">
+                <%= localEndDate %>
+              </div>
+              <div class="col-sm-2 h5 py-3">
+                <%= status %>
+              </div>
+              <div class="col-sm-2 my-auto">
+                <a class="btn py-3 w-100 <%= status === 'UPCOMING' ? 'btn-primary' : (status === 'FINISHED' ? 'btn-success' : 'btn-warning') %>"
+                  href="<%= url %>">
+                  <%= btn %>
+                </a>
+              </div>
+
+              <div class="col-sm-1 my-auto">
+                <a class="btn btn-danger w-100 py-3" type="button" data-toggle="modal"
+                  data-target="#ModalId<%=election._id%><%= status === 'ONGOING' ? 'End' : 'Delete' %>">
+                  <%= status==='ONGOING' ? 'End' : 'Delete' %>
+                </a>
+              </div>
+              <div class="modal fade" id="ModalId<%=election._id%><%= status === 'ONGOING' ? 'End' : 'Delete' %>"
+                tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel<%=election._id%>" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title text-danger" id="exampleModalLabel<%=election._id%>">WARNING</h5>
-                      
+
                     </div>
                     <div class="modal-body">
-                      Are you sure you want to delete election: <%=election.electionTitle%> from your record?
+                      <% if (status==='ONGOING' ){ %>
+                        Are you sure you want to end election: <%=election.electionTitle%>? This action will terminate
+                          the election prematurely and prevent voters from casting their votes.
+                          <%} else { %>
+                            Are you sure you want to delete election: <%=election.electionTitle%> from your record?
+                              <% } %>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                      <a class="btn btn-primary" href="/admin/deleteElection?electionId=<%=election._id%>">Yes</a>
+                      <a class="btn btn-primary" href="<% if (status === 'ONGOING') { %>
+                        /admin/endElection?electionId=<%=election._id%>
+                        <% }else { %>
+                          /admin/deleteElection?electionId=<%=election._id%>
+                        <% } %>">Yes</a>
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
-            <% }; %>
-            
-          </div>
+            <% }}else{ %>
+              <div class="row border">
+                <div class="col-sm-12 text-center py-3">
+                  <p>No elections yet. Start an election now!</p>
+                </div>
+              </div>
+              <% }; %>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                crossorigin="anonymous"></script>
-                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 

@@ -4,9 +4,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
+require('dotenv').config();
 
 //Database Connection
-const uri = "mongodb+srv://ocampojaym:onlinevotingsystem@cluster0.lkzwfqc.mongodb.net/URSM?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI;
 mongoose.connect(uri).then(()=> console.log('Connected to Database!')).catch((error)=> console.log(error));
 
 

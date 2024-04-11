@@ -5,25 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
 
 </head>
 
 <body>
 
-    <p class="h1 text-center">Voters Database</p>
-    <a class="btn btn-primary" href="/admin/dashboard">Back to Dashboard</a>
-    <form method="post" action="/admin/registerVoters">
-        <div class="container my-5">
-            <h2>Voters Registration Form</h2>
-            <div class="form-group">
-                <%- include('./partials/loginErrors.ejs') %>
-                    <label for="voterInfos">Register a voter (new line per voter) in this format:<br><b>Student
-                            Number,First Name,Middle Name,Last Name,Program (ex. BSCPE),Email</b></label>
-                    <textarea class="form-control" id="voterInfos" name="voterInfos" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Register Voters</button>
-        </div>
-    </form>
+    <% function capitalizeFirstLetter(str) { return str.charAt(0).toUpperCase() + str.slice(1); }; %>
+    <nav class="navbar navbar-expand-sm navbar-dark border">
+      <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
+      <p class="h5 ms-auto me-5">Registered Voters</p>
+    </nav>
+
+    <nav class="navbar navbar-expand-sm bg-primary">
+
+      <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav py-2 mx-auto">
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom " href="/admin/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom" href="/admin/createElection?exists=false">Create New Election</a>
+          </li>
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom btn-active" href="/admin/manageVoters">Registered Voters</a>
+          </li>
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom" href="/admin/votersRegistration">Voters Registration</a>
+          </li>
+          
+          <li class="nav-item mx-5 my-auto">
+            <a class="btn-custom" href="/admin/logout">Logout</a>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+
     <p class="h1 text-center m-5">Registered Voters</p>
     <div class="container mb-5">
         <div class="row border">

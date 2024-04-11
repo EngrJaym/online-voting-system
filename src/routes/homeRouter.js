@@ -46,7 +46,7 @@ router.post('/signup/admin', async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = await Admin.create({
                 email: regEmail, password: hashedPassword,
-                firstName: capsAll(firstName), middleName: capsAll(middleName), lastName: capsAll(lastName), userType: userType
+                firstName: capsAll(firstName), middleName: capsAll(middleName), lastName: capsAll(lastName), role: 'admin'
             });
             let errors = [];
             errors.push({msg: 'User successfully registered! You can now log in'})

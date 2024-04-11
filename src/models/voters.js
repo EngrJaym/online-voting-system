@@ -34,6 +34,10 @@ const voterSchema = new mongoose.Schema({
     creator:{
         type: String,
         required: true
+    },
+    role: {
+        type: String,
+        required: true
     }
 })
 

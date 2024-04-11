@@ -5,29 +5,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
 
 </head>
 
 <body>
-
-    <form method="post" 
-    <% if (exists){ %>
-        action="/admin/createElection?exists=true&electionId=<%= electionId %>"
+    
+    <nav class="navbar navbar-expand-sm navbar-dark border">
+        <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
+        <% if (exists === true){ %>
+            <p class="h5 ms-auto me-5">Update Election Settings</p>
+        <%} else { %>
+        <p class="h5 ms-auto me-5">Create New Election</p>
+        <% } %>
+      </nav>
+      <% if (exists === false) { %>
+      <nav class="navbar navbar-expand-sm bg-primary">
+  
+        <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav py-2 mx-auto">
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom " href="/admin/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom  btn-active" href="/admin/createElection?exists=false">Create New Election</a>
+            </li>
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom" href="/admin/manageVoters">Registered Voters</a>
+            </li>
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom" href="/admin/votersRegistration">Voters Registration</a>
+            </li>
+            
+            <li class="nav-item mx-5 my-auto">
+              <a class="btn-custom" href="/admin/logout">Logout</a>
+            </li>
+  
+          </ul>
+        </div>
+      </nav>
+      <p class="h3 text-center mt-5">Create an Election</p>
+      
     <% } else {%>
-        action="/admin/createElection?exists=false"
+        <p class="h3 text-center mt-5">Update Election</p>
     <% } %>
-    >
-        <h1>SET YOUR ELECTION</h1>
-        <label for="electionTitle">Election Title</label>
-        <input type="text" id="electionTitle" name="electionTitle" value="<%= typeof electionTitle !== 'undefined' ? electionTitle : '' %>" required><br>
-        <label for="startDate">Start Date</label>
-        <input type="datetime-local" id="startDate" name="startDate" value="<%= typeof startDate !== 'undefined' ? startDate : '' %>" required>
-        <label for="endDate">End Date</label>
-        <input type="datetime-local" id="endDate" name="endDate" value="<%= typeof endDate !== 'undefined' ? endDate : '' %>" required>
-        <br>
-        <a class="btn btn-primary" href="/admin/dashboard">Back to Dashboard</a>
-        <button type="submit" class="btn btn-success">Create Election</button>
-    </form>
+    <div class="container px-auto border w-50 my-5">
+
+        <form method="post" class="form-group" <% if (exists === true){ %>
+            action="/admin/createElection?exists=true&electionId=<%= electionId %>"
+                <% } else {%>
+                    action="/admin/createElection?exists=false"
+                    <% } %>
+                        >
+                        
+                        <div class="container mx-auto p-3">
+                            <%- include('./partials/loginErrors') %>
+                            <label for="electionTitle" class="form-title">Election Title</label>
+                            <input type="text" class="form-control my-3" id="electionTitle" name="electionTitle"
+                                value="<%= typeof electionTitle !== 'undefined' ? electionTitle : '' %>" required>
+                            <label for="startDate" class="form-title">Start Date</label>
+                            <input type="datetime-local" class="form-control my-3" id="startDate" name="startDate"
+                                value="<%= typeof startDate !== 'undefined' ? startDate : '' %>" required>
+                            <label for="endDate" class="form-title">End Date</label>
+                            <input type="datetime-local" class="form-control my-3" id="endDate" name="endDate"
+                                value="<%= typeof endDate !== 'undefined' ? endDate : '' %>" required>
+                            <br>
+                            <%if (exists === false) { %>
+                                <button type="submit" class="btn btn-primary my-2">Create Election</button>
+                            <% } else { %>
+                                <button type="submit" class="btn btn-primary my-2">Update Election</button>
+                            <% } %>
+                        </div>
+        </form>
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

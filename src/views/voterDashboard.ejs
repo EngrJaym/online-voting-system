@@ -9,13 +9,21 @@
 </head>
 
 <body>
+    <% function capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }; %>
 
-    <h1>Welcome to Voter's Dashboard, <%= voter.firstName %>
-            <%= voter.lastName %>!</h1>
-    <a href="/voter/logout" class="btn btn-primary">Logout</a>
-    <hr>
-    <div class="container">
-        <p class="h2 text-center">INVITED ELECTIONS</p>
+    <nav class="navbar navbar-expand-sm bg-primary border">
+        <a class="navbar-brand ms-5 text-white" href="#">DigiVote by URSM</a>
+        <div class="d-flex inline align-items-center ms-auto">
+            <p class="text-white h5 mx-5">Welcome to Voter's Dashboard, <%= capitalizeFirstLetter(voter.firstName.toLowerCase()) %> <%= capitalizeFirstLetter(voter.lastName.toLowerCase()) %>!</p>
+          <a class="btn btn-danger ms-auto me-5" href="/voter/logout">Logout</a>
+        </div>
+          
+      </nav>
+
+    <div class="container mx-auto my-5">
+        <p class="h2 text-center my-5">INVITED ELECTIONS</p>
         <div class="row">
             <div class="col-sm-2">
                 <p class="h5">Election Title</p>
@@ -33,7 +41,9 @@
                 <p></p>
             </div>
         </div>
-        <%const options = { 
+        <%
+        if (invitedElections.length > 0){
+        const options = { 
             timeZone: 'Asia/Manila',
             hour12: true,
             hour: 'numeric',
@@ -53,33 +63,49 @@
               else if (now > election.startDate && now > election.endDate){
                   var status = 'FINISHED';
                   var btn = 'View Final Results';
-                  var url = '#';
+                  var url = '/voter/viewFinalResults?electionId=' + election._id;
               }
               else if (now > election.startDate && now < election.endDate){
                   var status = 'ONGOING';
+                  var voted = false;
+                  for (const votedElection of votedElections){
+                    if (votedElection == election._id){
+                        var btn = 'Already Voted';
+                        var url = '#';
+                        voted = true;
+                    }
+                  }
+                  if (!voted){
                     var btn = 'Vote Now';
-
-                  var url = '/voter/vote?electionId=' + election._id ;
+                    var url = '/voter/vote?electionId=' + election._id ;
+                  }
+                    
               } %>
-        <div class="row border align-items-center">
-            <div class="col-sm-2">
+        <div class="row border">
+            <div class="col-sm-2 py-3">
                 <%= election.electionTitle %>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 py-3">
                 <%= election.startDate.toLocaleString('en-us', options) %>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 py-3">
                 <%= election.endDate.toLocaleString('en-US', options) %>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-2 py-3">
                 <%= status %>
             </div>
-            <div class="col-sm-2 px-0">
-                <a class="btn w-100 <%= status === 'UPCOMING' ? 'btn-warning' : (status === 'FINISHED' ? 'btn-success' : 'btn-primary') %>"
+            <div class="col-sm-2 my-auto px-0">
+                <a class="btn w-100 py-3 <%= status === 'UPCOMING' ? 'btn-warning' : (status === 'FINISHED' ? 'btn-success' : (btn === 'Already Voted' ? 'btn-danger' : 'btn-primary')) %>"
                     href="<%= url %>"><%= btn %></a>
             </div>
             
         </div>
+        <% }} else{ %>
+            <div class="row border">
+                <div class="col-sm-12 text-center py-3">
+                    <p>No invited elections yet.</p>
+                </div>
+            </div>
         <% } %>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
