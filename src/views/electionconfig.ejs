@@ -32,12 +32,16 @@
       </nav>
       <%- include('./partials/launchErrors') %>
       <div class="container my-5">
-      <div class="row">
-        <div class="col-sm-4">
+      <div class="row my-5">
+        
+        <div class="col-sm-2">
+        </div>
+        
+        <div class="col-sm-8">
             <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th colspan="2" class="text-center">ELECTION SETTINGS</th>
+                    <th colspan="2" class="text-center p-0"><div class="container-fluid bg-primary text-white py-3 h5">Election Details</div></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -54,83 +58,98 @@
                     <td><%= endDateObject.toLocaleString('en-US', options) %></td>
                   </tr>
                   <tr>
-                    <td colspan="2"><a class="btn btn-primary text-center w-100" href="/admin/editElectionTitle?electionTitle=<%= electionTitle %>&startDate=<%= startDate %>&endDate=<%= endDate %>&electionId=<%=electionId%>">Edit</a></td>
+                    <td colspan="2" class="text-end"><a class="btn btn-primary text-center px-5" href="/admin/editElectionTitle?electionTitle=<%= electionTitle %>&startDate=<%= startDate %>&endDate=<%= endDate %>&electionId=<%=electionId%>">Edit</a></td>
                   </tr>
                 </tbody>
               </table>
         </div>
-      </div>
-    </div>
-       
-
-    <div class="container my-5">
-        <p class="h2">Election Ballots</p>
-        <div class="row border">
-            <div class="col-sm-4">
-                <p class="fw-bold">Position</p>
-            </div>
-            <div class="col-sm-6">
-                <p class="fw-bold">Candidates</p>
-            </div>
-            <div class="col-sm-2">
-            </div>
+        <div class="col-sm-2">
         </div>
-        <% if (ballots.length !==0){ for (let ballot of ballots) { %>
-            <div class="row border">
-                <div class="col-sm-4">
-                    <p>
-                        <%=ballot.position%>
-                    </p>
-                </div>
-                <div class="col-sm-6">
-                    <p>
-                        <%=ballot.candidates%>
-                    </p>
-                </div>
-                <div class="col-sm-2">
+        </div>
+        <div class="row my-5">
+            <div class="col-sm-2">
 
+            </div>
+        <div class="col-sm-8">
 
-                    <div class="col-sm-2 text-center">
-                        <a class="btn btn-danger px-3" type="button" data-toggle="modal"
-                            data-target="#ModalId<%=ballot._id%>">Delete</a>
-                    </div>
-    
-                    <div class="modal fade" id="ModalId<%=ballot._id%>" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalLabel<%=ballot._id%>" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-danger" id="exampleModalLabel<%=ballot._id%>">WARNING</h5>
-    
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure you want to remove this ballot from election: <%=electionTitle%>?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                    <a class="btn btn-primary"
-                                        href="/admin/deleteBallot?electionId=<%=electionId%>&ballotId=<%=ballot._id%>">Yes</a>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th colspan="3" class="text-center p-0"><div class="container-fluid bg-primary text-white py-3 h5">Election Ballots</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-center">
+                    <th>Position</th>
+                    <th>Candidates</th>
+                    <th></th>
+                  </tr>
+                  <%
+                  if (ballots.length !==0){ for (let ballot of ballots) { %>
+                    <tr>
+                        <td class="text-center">
+                            <p>
+                                <%=ballot.position%>  
+                            </p>
+                        </td>
+                        <td class="text-center">
+                            <p>
+                                <%= ballot.candidates.join(', ') %>
+                            </p>
+                        </td>
+                        <td class="text-center">
+                                <a class="btn btn-danger px-3" type="button" data-toggle="modal"
+                                    data-target="#ModalId<%=ballot._id%>">Delete</a>
+            
+                            <div class="modal fade" id="ModalId<%=ballot._id%>" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel<%=ballot._id%>" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-danger" id="exampleModalLabel<%=ballot._id%>">WARNING</h5>
+            
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to remove this ballot from election: <%=electionTitle%>?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                            <a class="btn btn-primary"
+                                                href="/admin/deleteBallot?electionId=<%=electionId%>&ballotId=<%=ballot._id%>">Yes</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+        
+        
+                        </td>
+                    </tr>
+                    <% }} else { %>
+                        <tr>
+                            <td colspan="3" class="text-center">
+                                <p>No ballots yet.</p>
+                            </td>
+                        </tr>
+                        <% } %>
+                    <tr>
+                        <td colspan="3" class="text-end">
+                            <a class="btn btn-primary px-5" href="/admin/editBallot?electionTitle=<%=electionTitle%>&startDate=<%=startDate%>&endDate=<%=endDate%>&electionId=<%=electionId%>">Add Ballot</a>
+        
+                        </td>
+                    </tr>
+                </tbody>
+              </table>
 
 
-                </div>
+               
+                    
             </div>
-            <% }} else { %>
-                <div class="row border">
-                    <div class="col-sm-12 text-center">
-                        <p>No ballots yet.</p>
-                    </div>
-                </div>
-                <% } %>
-            <a class="btn btn-primary" href="/admin/editBallot?electionTitle=<%=electionTitle%>&startDate=<%=startDate%>&endDate=<%=endDate%>&electionId=<%=electionId%>">Add Ballot</a>
-
+      </div>
+      <div class="col-sm-2"></div>
     </div>
 
     <form method="post" action="/admin/addVoters?electionId=<%=electionId%>">
-        <div class="container my-5">
+        <div class="container my-5 w-50">
             <p class="h2">Add Voters</p>
             <p>Reminder: Make sure your voters are already registered in the Voters database. If not,
                 register
@@ -142,7 +161,10 @@
                     <textarea class="form-control" id="studentNumbers" name="studentNumbers" rows="5"
                         required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Register Voters</button>
+            <div class="container text-end my-3">
+                <button type="submit" class="btn btn-primary">Register Voters</button>
+            </div>
+            
         </div>
     </form>
 

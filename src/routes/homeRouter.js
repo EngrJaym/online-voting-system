@@ -6,8 +6,6 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const path = require('path');
 
-const homeController = require('../controllers/homeController');
-
 function capsAll(str){
     return str.toUpperCase();
 }
@@ -120,5 +118,4 @@ router.post('/login/voter',async (req, res) => {
     
 })
 
-router.get('/electionconfig', homeController.showElectionConfig)
 module.exports = router;

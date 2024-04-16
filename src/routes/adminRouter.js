@@ -1,6 +1,7 @@
 const express = require('express');
+const path = require('path')
 const router = express.Router();
-const path = require('path');
+const twilio = require('twilio');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const moment = require('moment-timezone');
@@ -8,10 +9,26 @@ const Election = require('../models/election');
 const { Ballot, Votes } = require('../models/ballot');
 const Voters = require('../models/voters');
 const { start } = require('repl');
+const xlsx = require('xlsx-populate')
+const multer = require('multer')
 
 function removeWhitespace(str) {
     return str.replace(/\s+/g, '');
 };
+
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+function validateEmail(email) {
+    // Regular expression pattern for validating email addresses
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 
 const isAdmin = (req, res, next) => {
     if (req.session && req.session.user && req.session.user.role === 'admin') {
@@ -21,7 +38,15 @@ const isAdmin = (req, res, next) => {
     }
 };
 
+
+const uploads = multer();
+
 router.use(isAdmin);
+
+async function clearNullVotes(electionId) {
+    await Votes.find({ electionId: electionId + 'NULL' })
+    return
+}
 
 router.get('/dashboard', async (req, res) => {
     const { firstName, lastName, email } = req.session.user;
@@ -90,7 +115,7 @@ router.post('/createElection', async (req, res) => {
     let startDateTZ = moment.tz(startDate, 'Asia/Manila');
     let endDateTZ = moment.tz(endDate, 'Asia/Manila');
     let errors = [];
-    
+
     if (startDateTZ.isBefore(currDate)) {
         errors.push({ msg: 'Invalid start date. Start date cannot be in the past.' });
     }
@@ -151,6 +176,7 @@ router.get('/deleteElection', async (req, res) => {
     }
     await Election.findByIdAndDelete(currElection._id);
     console.log('Election successfully deleted.');
+    clearNullVotes(electionId);
     res.redirect('/admin/dashboard');
 
 });
@@ -173,15 +199,16 @@ router.get('/editBallot', async (req, res) => {
 
 router.post('/editBallot', async (req, res) => {
     const position = req.body.position;
-    console.log(position);
+    const candidates = req.body.candidates.split('\r\n');
+    console.log(position, candidates);
     const electionTitle = req.query.electionTitle;
     let startDate = req.query.startDate;
     let endDate = req.query.endDate;
     const currElection = await Election.findById(req.query.electionId);
-    for (pos of position) {
-        const newBallot = await Ballot.create({ position: pos.title, candidates: pos.candidates, creator: req.session.user.email });
-        currElection.ballots.push(newBallot._id);
-    }
+
+    const newBallot = await Ballot.create({ position: position, candidates: candidates, creator: req.session.user.email });
+    currElection.ballots.push(newBallot._id);
+
     currElection.save();
     console.log('Ballot successfully added.')
     const newElectionBallots = await Ballot.find({ _id: { $in: currElection.ballots } });
@@ -202,7 +229,7 @@ router.get('/deleteBallot', async (req, res) => {
     const newElectionBallots = await Ballot.find({ _id: { $in: currElection.ballots } });
     const newElectionVotersList = await Voters.find({ _id: { $in: currElection.voters } });
     console.log(newElectionVotersList);
-    res.render('electionConfig', { electionTitle: currElection.electionTitle, startDate: currElection.startDate, endDate: currElection.endDate, electionId: req.query.electionId, electionVoters: newElectionVotersList, ballots: newElectionBallots });
+    res.render('electionConfig', { electionTitle: currElection.electionTitle, startDate: currElection.startDate.toISOString(), endDate: currElection.endDate.toISOString(), electionId: req.query.electionId, electionVoters: newElectionVotersList, ballots: newElectionBallots });
 })
 
 router.post('/registerVoters', async (req, res) => {
@@ -215,25 +242,14 @@ router.post('/registerVoters', async (req, res) => {
     const studentSurname = removeWhitespace(req.body.lastName.toUpperCase());
     const studentProgram = removeWhitespace(req.body.program.toUpperCase());
     const existingVoter = await Voters.findOne({ studentNumber: studentNumber });
+
     try {
         if (!existingVoter) {
             const existingEmail = await Voters.findOne({ email: studentEmail });
             if (existingEmail) {
                 errors.push({ msg: `${studentEmail} is already in use.` })
             } else {
-                function generateRandomString(length) {
-                    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                    let result = '';
-                    for (let i = 0; i < length; i++) {
-                        result += characters.charAt(Math.floor(Math.random() * characters.length));
-                    }
-                    return result;
-                }
-                function validateEmail(email) {
-                    // Regular expression pattern for validating email addresses
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    return emailRegex.test(email);
-                }
+
                 if (validateEmail(studentEmail)) {
                     const tempPassword = generateRandomString(8);
                     const hashedPassword = await bcrypt.hash(tempPassword, 10);
@@ -243,7 +259,7 @@ router.post('/registerVoters', async (req, res) => {
                         service: 'gmail',
                         auth: {
                             user: process.env.GMAIL_EMAIL,
-                            pass: process.env.GMAIL_PASSWORD 
+                            pass: process.env.GMAIL_PASSWORD
                         }
                     });
 
@@ -291,9 +307,137 @@ router.post('/registerVoters', async (req, res) => {
     } catch (error) {
         errors.push({ msg: `Invalid input, please try again. ${error}` })
     }
+
     const registeredVoters = await Voters.find({ creator: creatorEmail });
-    res.render('votersRegistration', { registeredVoters, errors, creatorEmail: req.session.user});
+    res.render('votersRegistration', { registeredVoters, errors, creatorEmail: req.session.user });
 });
+
+router.post('/registerVotersBatch', uploads.single('file'), async (req, res) => {
+    const uploadedFile = req.file;
+    const fileExtension = path.extname(uploadedFile.originalname);
+    let errors = []
+    var emailUsed = 0;
+    var successfullyRegistered = 0;
+    var invalidEmail = 0;
+    var alreadyRegistered = 0;
+    var invalidInput = 0;
+    var supportedFileExt = true;
+
+    if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+        const workbook = await xlsx.fromDataAsync(uploadedFile.buffer);
+        const data = workbook.sheet(0).usedRange().value();
+
+        var rowCount = 0;
+        for (let row of data) {
+            if (rowCount === 0) {
+                rowCount++;
+                continue
+            }
+            const studentFirstname = row[0];
+            const studentMiddlename = row[1];
+            const studentSurname = row[2];
+            const studentNumber = row[3].toString();
+            const studentProgram = row[4];
+            const studentEmail = row[5];
+            console.log(studentNumber, studentEmail)
+            const existingVoter = await Voters.findOne({ studentNumber: studentNumber });
+            try {
+                if (!existingVoter) {
+                    const existingEmail = await Voters.findOne({ email: studentEmail });
+                    if (existingEmail) {
+                        emailUsed++;
+                    } else {
+
+                        if (validateEmail(studentEmail)) {
+                            const tempPassword = generateRandomString(8);
+                            const hashedPassword = await bcrypt.hash(tempPassword, 10);
+                            const newVoter = await Voters.create({ studentNumber: studentNumber, lastName: studentSurname, firstName: studentFirstname, middleName: studentMiddlename, program: studentProgram, email: studentEmail, password: hashedPassword, creator: req.session.user.email, role: 'voter' });
+
+                            var transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                    user: process.env.GMAIL_EMAIL,
+                                    pass: process.env.GMAIL_PASSWORD
+                                }
+                            });
+
+                            var mailOptions = {
+                                from: process.env.GMAIL_EMAIL,
+                                to: `${newVoter.email}`,
+                                subject: 'Welcome to DigiVote - URS Online Voting System!',
+                                text: `
+                            Dear ${newVoter.firstName} ${newVoter.middleName} ${newVoter.lastName},
+                            
+                            Welcome to the Voting System! You have successfully registered for an account. Below are your login credentials:
+                            
+                            - Student Number: ${newVoter.studentNumber}
+                            - Temporary Password: ${tempPassword}
+                            
+                            Please use the following steps to access your account:
+                            
+                            1. Visit the Voting System login page at www.digivote.urs.edu
+                            2. Enter your student number and the temporary password provided above.
+                            3. Upon logging in, you can change your account's password.
+                            
+                            If you did not request this registration or have any questions, please contact us immediately.
+                            
+                            Thank you,
+                            DigiVote
+                            `
+                            };
+
+                            transporter.sendMail(mailOptions, function (error, info) {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    console.log('Email sent: ' + info.response);
+                                }
+                            });
+                            successfullyRegistered++;
+                        } else {
+                            invalidEmail++;
+                        }
+                    }
+
+                } else {
+                    alreadyRegistered++;
+                }
+            } catch (error) {
+                invalidInput++;
+            }
+            rowCount++;
+        }
+    } else {
+        console.log('File extension not supported.')
+        supportedFileExt = false;
+    }
+        
+    var totalUnregisteredVoters = emailUsed + invalidEmail + alreadyRegistered + invalidInput;
+    if (emailUsed > 0 || invalidEmail > 0 || alreadyRegistered > 0 || invalidInput > 0){
+        let msg = `A total of ${totalUnregisteredVoters} entries are not registered due to these possible reasons: used email or student number, invalid email format, or voter is already registered.`
+        /*if (emailUsed > 0) {
+            msg = msg + ` ${emailUsed} emails are already used.`
+        }
+        if (invalidEmail > 0){
+            msg = msg + ` ${invalidEmail} emails are in invalid format.`
+        }
+        if (alreadyRegistered > 0){
+            msg = msg + ` ${alreadyRegistered} student numbers are already registered.`
+        }
+        if (invalidInput > 0){
+            msg = msg + ` ${invalidInput} interntal errors occured.`
+        } */
+        errors.push({msg: msg});
+        
+    }
+
+    if (supportedFileExt === false){
+        errors.push({msg: 'File not supported. Please use .xlsx or .csv file extensions only.'})
+    }
+    errors.push({msg: `${successfullyRegistered} voters are successfully registered.`})
+    const registeredVoters = await Voters.find({ creator: req.session.user.email });
+    res.render('votersRegistration', { registeredVoters, errors, creatorEmail: req.session.user });
+})
 
 router.post('/addVoters', async (req, res) => {
     let errors = [];
@@ -382,9 +526,6 @@ router.get('/viewFinalResults', async (req, res) => {
     const status = req.query.status;
     const election = await Election.findById(req.query.electionId);
     const ballots = await Ballot.find({ _id: { $in: election.ballots } });
-    for (const ballot of ballots) {
-        console.log(ballot.position, ballot.candidates)
-    }
     const results = await Votes.aggregate([
         { $match: { electionId: req.query.electionId } },
 
@@ -416,7 +557,6 @@ router.get('/viewFinalResults', async (req, res) => {
         acc[key].push(obj);
         return acc;
     }, {});
-    console.log(groupedByCreator)
     const votersCount = (election.voters.length).toFixed(2);
     let voterTurnout = 0;
     for (const key in groupedByCreator) {

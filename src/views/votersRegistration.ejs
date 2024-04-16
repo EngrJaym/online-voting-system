@@ -2,97 +2,228 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-sm navbar-dark border">
-        <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
-        <p class="h5 ms-auto me-5">Voters Registration</p>
-      </nav>
-  
-      <nav class="navbar navbar-expand-sm bg-primary">
-  
-        <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav py-2 mx-auto">
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom " href="/admin/dashboard">Dashboard</a>
-            </li>
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom" href="/admin/createElection?exists=false">Create New Election</a>
-            </li>
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom" href="/admin/manageVoters">Registered Voters</a>
-            </li>
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom btn-active" href="/admin/votersRegistration">Voters Registration</a>
-            </li>
-            
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom" href="/admin/logout">Logout</a>
-            </li>
-  
-          </ul>
-        </div>
-      </nav>
+  <nav class="navbar navbar-expand-sm navbar-dark">
+    <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
+    <p class="h5 ms-auto me-5">Voters Registration</p>
+  </nav>
 
+  <nav class="navbar navbar-expand-sm bg-primary">
 
-    <div class="container my-5 w-50 border p-3">
-        <h2 class="mb-4 text-center">Voters Registration Form</h2>
-        <%- include('./partials/loginErrors.ejs') %>
-        <form action="/admin/registerVoters" method="post" class="form-group">
+    <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav py-2 mx-auto">
+        <li class="nav-item mx-5 my-auto">
+          <a class="btn-custom " href="/admin/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item mx-5 my-auto">
+          <a class="btn-custom" href="/admin/createElection?exists=false">Create New Election</a>
+        </li>
+        <li class="nav-item mx-5 my-auto">
+          <a class="btn-custom" href="/admin/manageVoters">Registered Voters</a>
+        </li>
+        <li class="nav-item mx-5 my-auto">
+          <a class="btn-custom btn-active" href="/admin/votersRegistration">Voters Registration</a>
+        </li>
 
-        <div class="row">
-            <div class="col-sm-4 my-3">
-                <label for="firstName" class="form-label">First Name:</label>
-                <input type="text" class="form-control" id="firstName" name="firstName" value="<%= typeof firstName != 'undefined' ? firstName : '' %>" required>
-            </div>
+        <li class="nav-item mx-5 my-auto">
+          <a class="btn-custom" href="/admin/logout">Logout</a>
+        </li>
 
-            <div class="col-sm-4 my-3">
-                <label for="middleName" class="form-label">Middle Name:</label>
-                <input type="text" class="form-control" id="middleName" name="middleName" value="<%= typeof middleName != 'undefined' ? middleName : '' %>" required>
-            </div>
-
-            <div class="col-sm-4 my-3">
-                <label for="lastName" class="form-label">Last Name:</label>
-                <input type="text" class="form-control" id="lastName" name="lastName" value="<%= typeof lastName != 'undefined' ? lastName : '' %>" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4 my-3">
-                <label for="studentNumber" class="form-label">Student Number:</label>
-                <input type="text" class="form-control" id="studentNumber" name="studentNumber" value="<%= typeof studentNumber != 'undefined' ? studentNumber: '' %>" required>
-            </div>
-            <div class="col-sm-4 my-3">
-                <label for="program" class="form-label">Program (e.g., BSCPE):</label>
-                <input type="text" class="form-control" id="program" name="program" value="<%= typeof program != 'undefined' ? program : '' %>" required>
-            </div>
-
-            <div class="col-sm-4 my-3">
-                <label for="email" class="form-label">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" value="<%= typeof email != 'undefined' ? email : '' %>" required>
-            </div>
-        </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-        
-        </form>
+      </ul>
     </div>
+  </nav>
 
-    
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <div class="container my-5 w-75 p-3">
+    <h2 class="mb-4 text-center h2">Voters Registration Form</h2>
+    <%- include('./partials/loginErrors.ejs') %>
+      <form action="/admin/registerVoters" method="post" class="form-group">
+
+        <div class="row">
+          <div class="col-sm-4 my-3">
+            <label for="firstName" class="form-label">First Name:</label>
+            <input type="text" class="form-control" id="firstName" name="firstName"
+              value="<%= typeof firstName != 'undefined' ? firstName : '' %>" required>
+          </div>
+
+          <div class="col-sm-4 my-3">
+            <label for="middleName" class="form-label">Middle Name:</label>
+            <input type="text" class="form-control" id="middleName" name="middleName"
+              value="<%= typeof middleName != 'undefined' ? middleName : '' %>" required>
+          </div>
+
+          <div class="col-sm-4 my-3">
+            <label for="lastName" class="form-label">Last Name:</label>
+            <input type="text" class="form-control" id="lastName" name="lastName"
+              value="<%= typeof lastName != 'undefined' ? lastName : '' %>" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4 my-3">
+            <label for="studentNumber" class="form-label">Student Number:</label>
+            <input type="text" class="form-control" id="studentNumber" name="studentNumber"
+              value="<%= typeof studentNumber != 'undefined' ? studentNumber: '' %>" required>
+          </div>
+          <div class="col-sm-4 my-3">
+            <label for="program" class="form-label">Program (e.g., BSCPE):</label>
+            <input type="text" class="form-control" id="program" name="program"
+              value="<%= typeof program != 'undefined' ? program : '' %>" required>
+          </div>
+
+          <div class="col-sm-4 my-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" name="email"
+              value="<%= typeof email != 'undefined' ? email : '' %>" required>
+          </div>
+        </div>
+        <div class="container text-end">
+          <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+
+
+      </form>
+  </div>
+
+  <div class="container my-5 w-75 p-3">
+    <p class="h2 mb-4 text-center">Upload by Batch</p>
+    <form method="post" class="form-group" action="/admin/registerVotersBatch" enctype="multipart/form-data">
+        <div class="col-sm-12">
+          <p class="p">
+            Reminders:
+            <br>
+          <ol>
+            <li>
+              Column format: Ensure that your Excel or CSV file follows the proper format. The first row is for the header and the following rows are for the data values.
+              The file should contain the following header columns in the specified order: <br>
+              <ul>
+                <li>
+                  First Name
+                </li>
+                <li>
+                  Middle Name
+                </li>
+                <li>
+                  Last Name
+                </li>
+                <li>
+                  Student Number
+                </li>
+                <li>
+                  Program
+                </li>
+                <li>
+                  Email
+                </li>
+              </ul>
+            </li>
+            <br>
+            <p>It should look like this: </p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>
+                    First Name
+                  </td>
+                  <td>
+                    Middle Name
+                  </td>
+                  <td>
+                    Last Name
+                  </td>
+                  <td>
+                    Student Number
+                  </td>
+                  <td>
+                    Program
+                  </td>
+                  <td>
+                    Email
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John</td>
+                  <td>Diaz</td>
+                  <td>Cena</td>
+                  <td>M2022-3032</td>
+                  <td>BCPE</td>
+                  <td>johncena@gmail.com</td>
+                </tr>
+              
+                <tr>
+                  <td>Jane</td>
+                  <td>Smith</td>
+                  <td>Doe</td>
+                  <td>F2022-1234</td>
+                  <td>BSEE</td>
+                  <td>janesmith@gmail.com</td>
+                </tr>
+              
+                <tr>
+                  <td>Michael</td>
+                  <td>Johnson</td>
+                  <td>Williams</td>
+                  <td>M2023-5678</td>
+                  <td>BSCS</td>
+                  <td>michaeljohnson@gmail.com</td>
+                </tr>
+              
+              </tbody>
+            </table>
+            <br>
+            <li>
+              Data Validation:
+
+              Before uploading, double-check the accuracy and completeness of the data in your file.
+              Verify that each column contains the correct type of information (e.g., names, student numbers, emails).
+            </li>
+
+            <li>
+              Single Sheet Requirement:
+
+              Make sure that your Excel file contains only one sheet.
+              The data to be uploaded should be located on the first sheet of the Excel file.
+            </li>
+          </ol>
+          </p>
+        </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="container text-center pt-1">
+            <label for="file" class="form-label">Upload excel or csv file: </label>
+          </div>
+
+        </div>
+        <div class="col-sm-8">
+          <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls, .csv" required>
+        </div>
+      </div>
+      <div class="row my-3">
+        <div class="col-sm-12 container text-end">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

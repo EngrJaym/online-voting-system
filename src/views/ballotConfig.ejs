@@ -27,56 +27,19 @@
                 </div>
                 <div class="form-group">
                     <label for="position1">Position Title:</label>
-                    <input type="text" class="form-control position-title" name="position[0][title]" required>
-                    <label for="position1Candidates">Candidates:</label>
+                    <input type="text" class="form-control position-title" name="position" required>
+                    <label for="position1Candidates">Candidates (new line per candidate):</label>
                     <div id="position1Candidates">
-                        <input type="text" class="form-control mb-2" name="position[0][candidates][0]" required>
+                            <textarea  class="form-control mb-2" name="candidates" placeholder="example:
+        John
+        Michael
+        Luke" rows="5" required></textarea>
                     </div>
-                    <button type="button" class="btn btn-secondary addCandidate" data-position="1">Add
-                        Candidate</button>
                 </div>
             </div>
-            <button type="button" class="btn btn-primary mt-3" id="addPosition">Add Position</button>
             <button type="submit" class="btn btn-success mt-3">Save Changes</button>
         </form>
     </div>
-
-    <!-- Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-
-        $(document).ready(function () {
-            var positionCount = 0;
-            // Add candidate button functionality
-            $(document).on('click', '.addCandidate', function () {
-                const newPositionCandidateInput = `
-            <input type="text" class="form-control mb-2" name="position[${positionCount}][candidates][${$(this).siblings('input[name^="position"]').length}]" required>
-        `;
-                $(this).before(newPositionCandidateInput);
-            });
-
-            // Add position button functionality
-            $('#addPosition').click(function () {
-                positionCount++;
-                const newPositionInput = `
-                <div class="form-group">
-                    <label for="position${positionCount}">Position Title:</label>
-                    <input type="text" class="form-control position-title" id="position${positionCount}" name="position[${positionCount}][title]" required>
-                    <label for="position${positionCount}Candidates">Candidates:</label>
-                    <div id="position${positionCount}Candidates">
-                        <input type="text" class="form-control mb-2" name="position[${positionCount}][candidates][]" required>
-                    </div>
-                    <button type="button" class="btn btn-secondary addCandidate" data-position="${positionCount}">Add Candidate</button>
-                </div>
-            `;
-                $('#positionsContainer').append(newPositionInput);
-            });
-        });
-
-    </script>
-
 
 </body>
 

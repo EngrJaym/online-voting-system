@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Code</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container w-50">
+    <div class="row justify-content-center">
+      <div class="col-sm-12">
+        <h2 class="text-center mb-4">Enter Verification Code</h2>
+        <p class="text-center">It may take up to 1 - 2 minutes for you to receive the authentication code in your email.</p>
+        <%- include('./partials/loginErrors.ejs') %>
+          <form class="d-flex justify-content-center" method="post"
+            action="/voter/voteVerification?voterId=<%= voterId %>&electionId=<%= electionId %>">
+
+            <div class="row text-center">
+              <div class="col-sm-8 py-3">
+                <input type="text" class="form-control text-center" name="otp"
+                  placeholder="Enter code here" maxlength="6" required>
+              </div>
+              <div class="col-sm-4 py-3">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+              </div>
+            </div>
+
+          </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

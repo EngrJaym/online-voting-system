@@ -18,22 +18,25 @@
           
       </nav>
 
-    <div class="container">
-    <form action="/voter/vote?electionId=<%= election._id %>" method="post" class="form-group border"> <% for (const ballot of ballots){ var positionCount=1; %>
-        <div class="container my-5 mx-auto">
+    <div class="container w-25 my-5">
+    <form action="/voter/vote?electionId=<%= election._id %>" method="post" class="form-group"> <% for (const ballot of ballots){ var positionCount=1; %>
+        <div class="card my-5">
+            <div class="card-header">
             <label class="form-label h3" for="option<%= positionCount %>">
                 <%= ballot.position %>
             </label>
-
+            </div>
+            <div class="card-body">
             <% for (const option of ballot.candidates) { %>
-                <div class="form-check">
+                <div class="form-check py-2">
                     <input class="form-check-input form-control" type="radio" name="<%=ballot.position%>"
                         id="<% ballot.position + option %>" value="<%=option%>" required>
-                    <label class="form-check-label ms-2" for="<%=option%>">
+                    <label class="form-check-label ms-3 h5" for="<%=option%>">
                         <%= option %>
                     </label>
                 </div>
                 <% } %>
+            </div>
         </div>
         <% positionCount++; } %>
         <button type="submit" class="btn btn-primary">Submit</button>

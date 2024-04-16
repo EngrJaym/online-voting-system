@@ -19,7 +19,7 @@
         <p class="h5 ms-auto me-5">Create New Election</p>
         <% } %>
       </nav>
-      <% if (exists === false) { %>
+      <% if (exists !== true) { %>
       <nav class="navbar navbar-expand-sm bg-primary">
   
         <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -47,12 +47,12 @@
           </ul>
         </div>
       </nav>
-      <p class="h3 text-center mt-5">Create an Election</p>
+      <p class="h1 text-center mt-5">Create an Election</p>
       
     <% } else {%>
         <p class="h3 text-center mt-5">Update Election</p>
     <% } %>
-    <div class="container px-auto border w-50 my-5">
+    <div class="container px-auto w-50 my-5">
 
         <form method="post" class="form-group" <% if (exists === true){ %>
             action="/admin/createElection?exists=true&electionId=<%= electionId %>"
@@ -63,13 +63,13 @@
                         
                         <div class="container mx-auto p-3">
                             <%- include('./partials/loginErrors') %>
-                            <label for="electionTitle" class="form-title">Election Title</label>
+                            <label for="electionTitle" class="form-title fw-bold">Election Title</label>
                             <input type="text" class="form-control my-3" id="electionTitle" name="electionTitle"
                                 value="<%= typeof electionTitle !== 'undefined' ? electionTitle : '' %>" required>
-                            <label for="startDate" class="form-title">Start Date</label>
+                            <label for="startDate" class="form-title fw-bold">Start Date</label>
                             <input type="datetime-local" class="form-control my-3" id="startDate" name="startDate"
                                 value="<%= typeof startDate !== 'undefined' ? startDate : '' %>" required>
-                            <label for="endDate" class="form-title">End Date</label>
+                            <label for="endDate" class="form-title fw-bold">End Date</label>
                             <input type="datetime-local" class="form-control my-3" id="endDate" name="endDate"
                                 value="<%= typeof endDate !== 'undefined' ? endDate : '' %>" required>
                             <br>

@@ -11,7 +11,7 @@
 
 <body>
 
-    <% function capitalizeFirstLetter(str) { return str.charAt(0).toUpperCase() + str.slice(1); }; %>
+    
     <nav class="navbar navbar-expand-sm navbar-dark border">
       <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
       <p class="h5 ms-auto me-5">Registered Voters</p>
@@ -47,8 +47,8 @@
 
     <p class="h1 text-center m-5">Registered Voters</p>
     <div class="container mb-5">
-        <div class="row border">
-            <div class="col-sm-1">
+        <div class="row border bg-primary text-white text-center p-3">
+            <div class="col-sm-2">
                 <p class="fw-bold">STUDENT NUMBER</p>
             </div>
             <div class="col-sm-2">
@@ -66,42 +66,42 @@
             <div class="col-sm-2">
                 <p class="fw-bold">EMAIL</p>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-1">
             </div>
         </div>
         <% if (registeredVoters.length !==0){ for (let voter of registeredVoters) { %>
-            <div class="row border">
-                <div class="col-sm-1">
+            <div class="row border-top border-bottom text-center">
+                <div class="col-sm-2 py-2">
                     <p>
                         <%= voter.studentNumber %>
                     </p>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 py-2">
                     <p>
                         <%= voter.firstName %>
                     </p>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 py-2">
                     <p>
                         <%= voter.middleName %>
                     </p>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 py-2">
                     <p>
                         <%= voter.lastName %>
                     </p>
                 </div>
-                <div class="col-sm-1">
+                <div class="col-sm-1 py-2">
                     <p>
                         <%= voter.program %>
                     </p>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 py-2">
                     <p>
                         <%= voter.email %>
                     </p>
                 </div>
-                <div class="col-sm-2 text-center">
+                <div class="col-sm-1 text-center py-2">
                     <a class="btn btn-danger px-3" type="button" data-toggle="modal"
                         data-target="#ModalId<%=voter._id%>">Delete</a>
                 </div>

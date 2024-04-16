@@ -22,9 +22,9 @@
           
       </nav>
 
-    <div class="container mx-auto my-5">
+    <div class="container mx-auto my-5 ">
         <p class="h2 text-center my-5">INVITED ELECTIONS</p>
-        <div class="row">
+        <div class="row bg-primary text-white text-center p-3">
             <div class="col-sm-2">
                 <p class="h5">Election Title</p>
             </div>
@@ -53,8 +53,16 @@
             year: 'numeric'
          };
 
-        const now = new Date(); 
+         const utcDate = new Date();
+        const timezoneOffsetInMinutes = utcDate.getTimezoneOffset();
+        const now = new Date(utcDate.getTime() - (timezoneOffsetInMinutes * 60000));
         for (const election of invitedElections){ 
+
+            const ISOStartDate = election.startDate.toISOString().slice(0,16);
+          const ISOEndDate = election.endDate.toISOString().slice(0,16);
+          const localStartDate = new Date(ISOStartDate).toLocaleString('en-US', options);
+          const localEndDate = new Date(ISOEndDate).toLocaleString('en-US', options);
+
             if (now < election.startDate){ 
                 var status = 'UPCOMING';
                 var btn = 'Waiting to Start';
@@ -63,33 +71,33 @@
               else if (now > election.startDate && now > election.endDate){
                   var status = 'FINISHED';
                   var btn = 'View Final Results';
-                  var url = '/voter/viewFinalResults?electionId=' + election._id;
+                  var url = '/voter/viewFinalResults?electionId=' + election._id + '&status=FINISHED';
               }
               else if (now > election.startDate && now < election.endDate){
                   var status = 'ONGOING';
                   var voted = false;
                   for (const votedElection of votedElections){
                     if (votedElection == election._id){
-                        var btn = 'Already Voted';
-                        var url = '#';
+                        var btn = 'View Partial Results';
+                        var url = '/voter/viewFinalResults?electionId=' + election._id + '&status=ONGOING';
                         voted = true;
                     }
                   }
-                  if (!voted){
+                  if (voted === false){
                     var btn = 'Vote Now';
                     var url = '/voter/vote?electionId=' + election._id ;
                   }
                     
               } %>
-        <div class="row border">
-            <div class="col-sm-2 py-3">
+        <div class="row border my-3 text-center">
+            <div class="col-sm-2 py-3" style="background-color: #eeeeee;">
                 <%= election.electionTitle %>
             </div>
             <div class="col-sm-3 py-3">
-                <%= election.startDate.toLocaleString('en-us', options) %>
+                <%= localStartDate %>
             </div>
-            <div class="col-sm-3 py-3">
-                <%= election.endDate.toLocaleString('en-US', options) %>
+            <div class="col-sm-3 py-3" style="background-color: #eeeeee;">
+                <%= localEndDate %>
             </div>
             <div class="col-sm-2 py-3">
                 <%= status %>
