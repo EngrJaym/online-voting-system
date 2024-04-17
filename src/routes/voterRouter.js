@@ -203,17 +203,14 @@ router.get('/changePassword', (req, res) => {
 router.post('/changePassword', async (req, res) => {
     const { currPassword, newPassword } = req.body;
     var otp = generateRandomString(6);
-    console.log('1')
     const voter = await Voters.findById(req.query.voterId);
     const correctCurrPassword = await bcrypt.compare(currPassword, voter.password);
     let errors = [];
-    console.log('2')
     if (correctCurrPassword) {
 
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
         var newPasswordObject = await newPasswords.create({ voterId: req.query.voterId, newPassword: hashedNewPassword, otp: otp });
         var newPasswordId = newPasswordObject._id;
-        console.log(newPassword, newPasswordId);
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -255,7 +252,6 @@ router.post('/changePassword', async (req, res) => {
 
     }
     else {
-        console.log('3');
         errors.push({ msg: 'Incorrect current password. Please try again.' });
         res.render('changePassword', { voterId: req.session.user._id, errors });
     }

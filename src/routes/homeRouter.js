@@ -19,6 +19,10 @@ router.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'public', 'html', 'about.html'));
 })
 
+router.get('/signup/admin', (req,res) => {
+    res.render('adminSignup');
+})
+
 router.post('/signup/admin', async (req, res) => {
     const { regEmail, password, confirmPassword, firstName , middleName, lastName } = req.body;
     const existingName = await Admin.findOne({ firstName: capsAll(firstName), middleName: capsAll(middleName), lastName: capsAll(lastName) });
@@ -47,7 +51,7 @@ router.post('/signup/admin', async (req, res) => {
             });
             let errors = [];
             errors.push({msg: 'User successfully registered! You can now log in'})
-            res.render('index', {errors, signupClicked});
+            res.render('index', {errors});
 
         } catch (error) {
             console.error("Error creating user: ", error);
@@ -57,7 +61,7 @@ router.post('/signup/admin', async (req, res) => {
     } else {
         console.log(registerErrors);
         res.status(400);
-        res.render('index', {
+        res.render('adminSignup', {
             registerErrors, regEmail, firstName, middleName, lastName, signupClicked: true
         });
     }
@@ -115,6 +119,6 @@ router.post('/login/voter',async (req, res) => {
         res.redirect(`/voter?error=${error}`);
     }
     
-})
+});
 
 module.exports = router;
