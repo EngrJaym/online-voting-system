@@ -11,13 +11,17 @@
 <body>
 
   <nav class="navbar navbar-expand-sm navbar-dark">
-    <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
+    <div class="nav-logo ms-5">
+      <div class="navbar-brand">
+          <img src="/img/logo2.png" width="200px" height="auto">
+      </div>
+  </div>
     <p class="h5 ms-auto me-5">Voters Registration</p>
   </nav>
 
-  <nav class="navbar navbar-expand-sm bg-primary">
+  <nav class="navbar navbar-expand-lg bg-primary">
 
-    <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button type="button" class="navbar-toggler mx-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -103,56 +107,36 @@
             <br>
           <ol>
             <li>
-              Column format: Ensure that your Excel or CSV file follows the proper format. The first row is for the header and the following rows are for the data values.
-              The file should contain the following header columns in the specified order: <br>
-              <ul>
-                <li>
-                  First Name
-                </li>
-                <li>
-                  Middle Name
-                </li>
-                <li>
-                  Last Name
-                </li>
-                <li>
-                  Student Number
-                </li>
-                <li>
-                  Program
-                </li>
-                <li>
-                  Email
-                </li>
-              </ul>
+              Column format: Ensure that your Excel file follows the proper format. The first row is for the header titles and the following rows are for the data values.
+              The file should contain the following header columns in the specified order from column A to column F. Any other format will not be parsed.<br>
             </li>
             <br>
             <p>It should look like this: </p>
-            <table class="table">
+            <div class="container" style="overflow-x: auto;">
+            <table class="table" style="white-space: nowrap;">
               <thead>
                 <tr>
-                  <td>
-                    First Name
-                  </td>
-                  <td>
-                    Middle Name
-                  </td>
-                  <td>
-                    Last Name
-                  </td>
-                  <td>
-                    Student Number
-                  </td>
-                  <td>
-                    Program
-                  </td>
-                  <td>
-                    Email
-                  </td>
+                  <td></td>
+                  <td>A</td>
+                  <td>B</td>
+                  <td>C</td>
+                  <td>D</td>
+                  <td>E</td>
+                  <td>F</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>First Name</td>
+                  <td>Middle Name</td>
+                  <td>Last Name</td>
+                  <td>Student Number</td>
+                  <td>Program</td>
+                  <td>Email</td>
                 </tr>
               </thead>
               <tbody>
                 <tr>
+                  <td>2</td>
                   <td>John</td>
                   <td>Diaz</td>
                   <td>Cena</td>
@@ -162,15 +146,17 @@
                 </tr>
               
                 <tr>
+                  <td>3</td>
                   <td>Jane</td>
                   <td>Smith</td>
                   <td>Doe</td>
-                  <td>F2022-1234</td>
+                  <td>M2022-1234</td>
                   <td>BSEE</td>
                   <td>janesmith@gmail.com</td>
                 </tr>
               
                 <tr>
+                  <td>4</td>
                   <td>Michael</td>
                   <td>Johnson</td>
                   <td>Williams</td>
@@ -181,6 +167,7 @@
               
               </tbody>
             </table>
+          </div>
             <br>
             <li>
               Data Validation:
@@ -192,8 +179,7 @@
             <li>
               Single Sheet Requirement:
 
-              Make sure that your Excel file contains only one sheet.
-              The data to be uploaded should be located on the first sheet of the Excel file.
+              Make sure that the data to be uploaded should be located on the first sheet of the Excel file.
             </li>
           </ol>
           </p>
@@ -201,12 +187,12 @@
       <div class="row">
         <div class="col-sm-4">
           <div class="container text-center pt-1">
-            <label for="file" class="form-label">Upload excel or csv file: </label>
+            <label for="file" class="form-label">Upload excel file here: </label>
           </div>
 
         </div>
         <div class="col-sm-8">
-          <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls, .csv" required>
+          <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls" required>
         </div>
       </div>
       <div class="row my-3">

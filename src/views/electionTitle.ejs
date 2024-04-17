@@ -11,14 +11,26 @@
 
 <body>
     
-    <nav class="navbar navbar-expand-sm navbar-dark border">
-        <a class="navbar-brand ms-5 text-dark" href="#">DigiVote by URSM</a>
         <% if (exists === true){ %>
-            <p class="h5 ms-auto me-5">Update Election Settings</p>
+          <nav class="navbar navbar-expand-sm bg-primary border">
+            <div class="nav-logo ms-5">
+              <div class="navbar-brand">
+                  <img src="/img/logo.png" width="200px" height="auto">
+              </div>
+          </div>
+          <p class="h5 ms-auto me-5 text-white">Update Election Settings</p>
+          </nav>
         <%} else { %>
+        <nav class="navbar navbar-expand-sm navbar-dark border">
+          <div class="nav-logo ms-5">
+            <div class="navbar-brand">
+                <img src="/img/logo2.png" width="200px" height="auto">
+            </div>
+        </div>
         <p class="h5 ms-auto me-5">Create New Election</p>
+        </nav>
         <% } %>
-      </nav>
+      
       <% if (exists !== true) { %>
       <nav class="navbar navbar-expand-sm bg-primary">
   

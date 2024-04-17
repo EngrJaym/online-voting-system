@@ -88,16 +88,16 @@ router.get('/saveElection', async (req, res) => {
     console.log(newElectionVotersList)
     let errors = [];
 
-    if (newElectionBallots.length === 0) {
-        errors.push({ msg: 'Election cannot be launched. Election must contain at least one ballot.' });
+    if (newElectionBallots.length === 0 || newElectionVotersList.length === 0){
+        if (newElectionBallots.length === 0) {
+            errors.push({ msg: 'Election cannot be launched. Election must contain at least one ballot.' });
+        }
+        if (newElectionVotersList.length === 0) {
+            errors.push({ msg: 'Election cannot be launched. Election must contain at least one voter.' });
+        }
         res.render('electionConfig', { electionTitle, startDate, endDate, electionId, electionVoters: newElectionVotersList, ballots: newElectionBallots, launchErrors: errors });
-
     }
-    if (newElectionVotersList.length === 0) {
-        errors.push({ msg: 'Election cannot be launched. Election must contain at least one voter.' });
-        res.render('electionConfig', { electionTitle, startDate, endDate, electionId, electionVoters: newElectionVotersList, ballots: newElectionBallots, launchErrors: errors });
-
-    } else {
+     else {
         res.redirect('/admin/dashboard');
     }
 });
@@ -216,6 +216,20 @@ router.post('/editBallot', async (req, res) => {
     res.render('electionConfig', { position: position, electionTitle: electionTitle, startDate: startDate, endDate: endDate, electionVoters: newElectionVotersList, electionId: currElection._id, ballots: newElectionBallots });
 });
 
+router.get('/cancelEditBallot', async (req, res) => {
+    let electionTitle = req.query.electionTitle;
+    let startDate = req.query.startDate;
+    let endDate = req.query.endDate;
+    let electionId = req.query.electionId;
+    const currElection = await Election.findById(electionId);
+    const newElectionBallots = await Ballot.find({ _id: { $in: currElection.ballots } });
+    const newElectionVotersList = await Voters.find({ _id: { $in: currElection.voters } });
+    console.log(newElectionBallots)
+    console.log(newElectionVotersList)
+    let errors = [];
+    res.render('electionConfig', { electionTitle, startDate, endDate, electionId, electionVoters: newElectionVotersList, ballots: newElectionBallots, launchErrors: errors });
+})
+
 router.get('/deleteBallot', async (req, res) => {
     const ballotId = req.query.ballotId;
 
@@ -324,9 +338,10 @@ router.post('/registerVotersBatch', uploads.single('file'), async (req, res) => 
     var supportedFileExt = true;
 
     if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+        try {
         const workbook = await xlsx.fromDataAsync(uploadedFile.buffer);
         const data = workbook.sheet(0).usedRange().value();
-
+    
         var rowCount = 0;
         for (let row of data) {
             if (rowCount === 0) {
@@ -406,6 +421,9 @@ router.post('/registerVotersBatch', uploads.single('file'), async (req, res) => 
                 invalidInput++;
             }
             rowCount++;
+        }} catch (error){
+            console.log('Error batch file')
+            errors.push({ msg: "File cannot be parsed due to its improper format. Please make sure you're following the proper format of data on your excel file as stated in the reminders."})
         }
     } else {
         console.log('File extension not supported.')
@@ -432,9 +450,12 @@ router.post('/registerVotersBatch', uploads.single('file'), async (req, res) => 
     }
 
     if (supportedFileExt === false){
-        errors.push({msg: 'File not supported. Please use .xlsx or .csv file extensions only.'})
+        errors.push({msg: 'File not supported. Please use .xlsx or .xls file extensions only.'})
     }
-    errors.push({msg: `${successfullyRegistered} voters are successfully registered.`})
+    if (successfullyRegistered > 0){
+        errors.push({msg: `${successfullyRegistered} voters are successfully registered.`})
+    }
+    
     const registeredVoters = await Voters.find({ creator: req.session.user.email });
     res.render('votersRegistration', { registeredVoters, errors, creatorEmail: req.session.user });
 })
@@ -449,7 +470,6 @@ router.post('/addVoters', async (req, res) => {
     //Parse Student Numbers
     for (let studentNumber of students) {
         const filterStudentNumber = removeWhitespace(studentNumber);
-
         const existingVoter = await Voters.findOne({ studentNumber: filterStudentNumber });
         //Check if voter is already registered
         if (existingVoter) {
@@ -484,7 +504,74 @@ router.post('/addVoters', async (req, res) => {
     }
     const newElectionBallots = await Ballot.find({ _id: { $in: currElection.ballots } });
     const newElectionVotersList = await Voters.find({ _id: { $in: currElection.voters } });
-    console.log(newElectionVotersList);
+    res.render('electionConfig', { electionTitle: currElection.electionTitle, startDate: currElection.startDate, endDate: currElection.endDate, electionId, electionVoters: newElectionVotersList, errors, ballots: newElectionBallots });
+
+});
+
+router.post('/addVotersBatch', uploads.single('file'), async (req, res) => {
+    const uploadedFile = req.file;
+    const fileExtension = path.extname(uploadedFile.originalname);
+    let errors = []
+    let electionId = req.query.electionId;
+    const currElection = await Election.findById(electionId);
+    var alreadyInElection = 0;
+    var notRegistered = 0;
+    var successfullyAdded = 0;
+
+    if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+        try {
+        const workbook = await xlsx.fromDataAsync(uploadedFile.buffer);
+        const data = workbook.sheet(0).usedRange().value();
+    
+        var rowCount = 0;
+        for (let row of data) {
+            if (rowCount === 0) {
+                rowCount++;
+                continue
+            }
+            const studentNumber = row[0].toString();
+            const filterStudentNumber = removeWhitespace(studentNumber);
+            const existingVoter = await Voters.findOne({ studentNumber: filterStudentNumber });
+            if (existingVoter){
+                if (currElection.voters.length === 0) {
+                    currElection.voters.push(existingVoter._id);
+                    successfullyAdded++;
+                }
+                else {
+                    const isInElectionVoters = currElection.voters.map(id => id.toString()).includes(existingVoter._id.toString());
+                    console.log('Already in Election: ', isInElectionVoters);
+                    if (isInElectionVoters === false) {
+                        currElection.voters.push(existingVoter._id);
+                        successfullyAdded++;
+                    }
+                    else {
+                        alreadyInElection++;
+                    }
+                }
+            } else {
+                if (filterStudentNumber.length !== 0) {
+                    notRegistered++;
+                    }
+            }
+        }
+        }catch (error){
+            errors.push({ msg: "File cannot be parsed due to its improper format. Please make sure you're following the proper format of data on your excel file as stated in the reminders."})
+        }
+    }else{
+        errors.push({msg: 'File not supported. Please use .xlsx or .xls file extensions only.'})
+    }
+    if (alreadyInElection > 0){
+        errors.push({ msg: `${alreadyInElection} voters were already invited in the election. No need to add them anymore.` });
+    }
+    if (notRegistered > 0){
+        errors.push({ msg: `${notRegistered} students are not yet registered. Please register them at the Voters Registration page.` });         
+    }
+    if (successfullyAdded > 0){
+        errors.push({msg: `${successfullyAdded} new voters are successfully invited to this election.`})
+    }
+    currElection.save();
+    const newElectionBallots = await Ballot.find({ _id: { $in: currElection.ballots } });
+    const newElectionVotersList = await Voters.find({ _id: { $in: currElection.voters } });
     res.render('electionConfig', { electionTitle: currElection.electionTitle, startDate: currElection.startDate, endDate: currElection.endDate, electionId, electionVoters: newElectionVotersList, errors, ballots: newElectionBallots });
 
 });

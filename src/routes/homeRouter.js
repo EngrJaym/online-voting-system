@@ -10,10 +10,9 @@ function capsAll(str){
     return str.toUpperCase();
 }
 
-var signupClicked = false;
 
 router.get('/',  (req, res) => {
-    res.render('index', {signupClicked})
+    res.render('index');
 })
 
 router.get('/about', (req, res) => {

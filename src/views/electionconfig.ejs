@@ -25,12 +25,22 @@
          const endDateObject = new Date(endDate);
     %>
     <nav class="navbar navbar-expand-sm border bg-primary">
-        <a class="navbar-brand ms-5 text-white" href="#">DigiVote by URSM</a>
-        <p class="h5 ms-auto me-5 text-white">Configure Election</p>
+        <div class="nav-logo ms-5">
+            <div class="navbar-brand">
+                <img src="/img/logo.png" width="200px" height="auto">
+            </div>
+        </div>
+        <div class="d-flex align-items-center ms-auto">
+            <p class="h5 me-5 text-white">Configure Election</p>
+        <a class="btn btn-danger me-3" href="/admin/deleteElection?electionId=<%= electionId %>">Delete Election</a>
         <a class="btn btn-success me-5" href="/admin/saveElection?electionTitle=<%=electionTitle%>&startDate=<%=startDate%>&endDate=<%=endDate%>&electionId=<%=electionId%>">Launch Election</a>
-
-      </nav>
-      <%- include('./partials/launchErrors') %>
+      
+        </div>
+        </nav>
+      <div class="container my-3 mx-auto w-75">
+        <%- include('./partials/launchErrors') %>
+      </div>
+      
       <div class="container my-5">
       <div class="row my-5">
         
@@ -162,11 +172,96 @@
                         required></textarea>
             </div>
             <div class="container text-end my-3">
-                <button type="submit" class="btn btn-primary">Register Voters</button>
+                <button type="submit" class="btn btn-primary">Add Voters</button>
             </div>
             
         </div>
     </form>
+
+    <div class="container my-5 w-75 p-3">
+        <p class="h2 mb-4 text-center">Upload by Batch</p>
+        <form method="post" class="form-group" action="/admin/addVotersBatch?electionId=<%= electionId %>" enctype="multipart/form-data">
+            <div class="col-sm-12">
+              <p class="p">
+                Reminders:
+                <br>
+              <ol>
+                <li>
+                  Column format: Ensure that your Excel file follows the proper format. The first row is for the header title and the following rows are for the data values.
+                  The file should contain the first column or column A for student numbers. Any other format will not be parsed.<br>
+                </li>
+                <br>
+                <p>It should look like this: </p>
+                <div class="container w-75" style="overflow-x: auto;">
+                <table class="table" style="white-space: nowrap;">
+                  <thead>
+                    <tr class="text-center">
+                      <td></td>
+                      <td>A</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td>1</td>
+                        <td>Student Number</td>
+                    </tr>
+                    
+                  </thead>
+                  <tbody>
+                    <tr class="text-center">
+                        <td>2</td>
+                        <td>M2022-1231</td>
+                      </tr>
+                    <tr class="text-center">
+                      <td>3</td>
+                      <td>M2019-3192</td>
+                    </tr>
+                  
+                    <tr class="text-center">
+                      <td>4</td>
+                      <td>M2023-3147</td>
+                    </tr>
+                  
+                    <tr class="text-center">
+                      <td>5</td>
+                      <td>M2021-2213</td>
+                    </tr>
+                  
+                  </tbody>
+                </table>
+              </div>
+                <br>
+                <li>
+                  Data Validation:
+    
+                  Before uploading, double-check the accuracy and completeness of the data in your file.
+                  Verify that the first column or column A contains the student numbers of students who are going to be invited to this election.
+                </li>
+    
+                <li>
+                  Single Sheet Requirement:
+    
+                  Make sure that your data to be uploaded should be located on the first sheet of the Excel file.
+                </li>
+              </ol>
+              </p>
+            </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="container text-center pt-1">
+                <label for="file" class="form-label">Upload excel file here: </label>
+              </div>
+    
+            </div>
+            <div class="col-sm-8">
+              <input type="file" class="form-control" id="file" name="file" accept=".xlsx, .xls" required>
+            </div>
+          </div>
+          <div class="row my-3">
+            <div class="col-sm-12 container text-end">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
 
     <p class="h2 text-center m-5">Election Voters</p>
     <div class="container mb-5">
