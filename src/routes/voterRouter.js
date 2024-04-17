@@ -4,6 +4,8 @@ const Election = require('../models/election');
 const { Ballot, Votes } = require('../models/ballot');
 const Voters = require('../models/voters');
 const nodemailer = require('nodemailer');
+const newPasswords = require('../models/newPasswords');
+const bcrypt = require('bcrypt');
 
 const isVoter = (req, res, next) => {
     if (req.session && req.session.user && req.session.user.role === 'voter') {
@@ -12,6 +14,15 @@ const isVoter = (req, res, next) => {
         return res.redirect('/');
     }
 };
+
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
 
 router.use(isVoter);
 
@@ -46,15 +57,6 @@ router.get('/vote', async (req, res) => {
 });
 
 router.post('/vote', async (req, res) => {
-
-    function generateRandomString(length) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return result;
-    }
 
     var voterEmail = req.session.user.email;
     var voterFullName = req.session.user.firstName + ' ' + req.session.user.middleName + ' ' + req.session.user.lastName;
@@ -102,29 +104,45 @@ router.post('/vote', async (req, res) => {
         }
     })
 
-    res.render('voteVerification', { voterId: req.session.user.studentNumber, electionId: req.query.electionId, errors: [] });
+    res.render('voteVerification', { voterId: req.session.user.studentNumber, electionId: req.query.electionId, errors: [], type: req.query.type });
 });
 
 router.post('/voteVerification', async (req, res) => {
 
-    const studentNumber = req.query.voterId;
-    const election = await Election.findById(req.query.electionId);
     const { otp } = req.body;
-    console.log(studentNumber, otp);
-    console.log('Comparing code...')
-    const votes = await Votes.find({ creator: studentNumber, electionId: req.query.electionId + 'NULL', verificationCode: otp });
-    console.log(votes)
-    if (votes.length > 0) {
-        for (let vote of votes) {
-            await Votes.findByIdAndUpdate(vote._id, { electionId: election._id });
+    console.log(req.query.type);
+    if (req.query.type === 'vote') {
+        const studentNumber = req.query.voterId;
+        const election = await Election.findById(req.query.electionId);
+        const votes = await Votes.find({ creator: studentNumber, electionId: req.query.electionId + 'NULL', verificationCode: otp });
+        if (votes.length > 0) {
+            for (let vote of votes) {
+                await Votes.findByIdAndUpdate(vote._id, { electionId: election._id });
+            }
+            console.log('Verified')
+            res.redirect('/voter/dashboard')
+        } else {
+            console.log('Unverified')
+            res.render('voteVerification', { voterId: req.session.user.studentNumber,type: 'vote', electionId: req.query.electionId, errors: [{ msg: 'Invalid Authentication Code. Please try again.' }] });
         }
-        console.log('Verified')
-        res.redirect('/voter/dashboard')
+    } else if (req.query.type === 'changePassword') {
+        const voterId = req.query.voterId;
+        const newPasswordId = req.query.newPasswordId;
+        const newPassword = await newPasswords.findById(newPasswordId);
+        console.log(newPasswordId, newPassword.otp, otp)
+        if (otp === newPassword.otp) {
+            await Voters.findByIdAndUpdate(voterId, { password: newPassword.newPassword });
+            console.log('correct otp');
+            let error = 'Password successfully changed. Please login again.'
+            res.redirect(`/voter?error=${error}`);
+        } else {
+            console.log('Wrong otp');
+            res.render('voteVerification', { voterId: voterId, type: 'changePassword', newPasswordId: newPasswordId, electionId: 'NULL', errors: [{msg: 'Invalid Authentication Code. Please try again.'}] });
+        }
     } else {
-        console.log('Unverified')
-        res.render('voteVerification', { voterId: req.session.user.studentNumber, electionId: req.query.electionId, errors: [{ msg: 'Invalid Authentication Code. Please try again.' }] });
+        console.log('No type');
+        res.redirect('/')
     }
-
 })
 
 router.get('/viewFinalResults', async (req, res) => {
@@ -174,6 +192,73 @@ router.get('/viewFinalResults', async (req, res) => {
 
     let status = req.query.status;
     res.render('votersFinalResults', { election, ballots, results, status, votes: groupedByCreator, votersCount, voterTurnout: voterTurnout.toFixed(2), voterTurnoutPercentage });
+
+});
+
+router.get('/changePassword', (req, res) => {
+    console.log(req.session.user._id);
+    res.render('changePassword', { voterId: req.session.user._id });
+});
+
+router.post('/changePassword', async (req, res) => {
+    const { currPassword, newPassword } = req.body;
+    var otp = generateRandomString(6);
+    console.log('1')
+    const voter = await Voters.findById(req.query.voterId);
+    const correctCurrPassword = await bcrypt.compare(currPassword, voter.password);
+    let errors = [];
+    console.log('2')
+    if (correctCurrPassword) {
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        var newPasswordObject = await newPasswords.create({ voterId: req.query.voterId, newPassword: hashedNewPassword, otp: otp });
+        var newPasswordId = newPasswordObject._id;
+        console.log(newPassword, newPasswordId);
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_EMAIL,
+                pass: process.env.GMAIL_PASSWORD
+            }
+        });
+
+        const mailOptions = {
+            from: process.env.GMAIL_EMAIL,
+            to: req.session.user.email,
+            subject: 'Password Change Verification Code',
+            text: `
+        Dear ${req.session.user.firstName} ${req.session.user.middleName} ${req.session.user.lastName},
+
+        Thank you for initiating the password change process for your account. To complete this process, please use the following verification code:
+
+        Verification Code: ${otp}
+
+        Please enter this code on the verification code page to finalize the password change. If you did not request this change, please contact us via email immediately.
+
+        Thank you for your cooperation.
+
+        Best regards,
+        DigiVote`
+        };
+
+        transporter.sendMail(mailOptions, async function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
+        res.render('voteVerification', { voterId: req.query.voterId, errors: [], type: req.query.type, newPasswordId: newPasswordId, electionId: 'NULL', errors });
+
+
+    }
+    else {
+        console.log('3');
+        errors.push({ msg: 'Incorrect current password. Please try again.' });
+        res.render('changePassword', { voterId: req.session.user._id, errors });
+    }
 
 })
 

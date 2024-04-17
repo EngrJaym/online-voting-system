@@ -33,7 +33,7 @@
       </nav>
 
     <div class="container my-5" id="ballot-container">
-    <form action="/voter/vote?electionId=<%= election._id %>" method="post" class="form-group"> <% for (const ballot of ballots){ var positionCount=1; %>
+    <form action="/voter/vote?electionId=<%= election._id %>type=vote" method="post" class="form-group"> <% for (const ballot of ballots){ var positionCount=1; %>
         <div class="card my-5">
             <div class="card-header bg-primary">
             <label class="form-label h3 text-white ms-3" for="option<%= positionCount %>">

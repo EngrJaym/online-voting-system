@@ -1,3 +1,4 @@
+const { MongoDecompressionError } = require('mongodb');
 const mongoose = require('mongoose');
 
 const voterSchema = new mongoose.Schema({
@@ -39,7 +40,8 @@ const voterSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-})
+});
+
 
 const voterModel = mongoose.model('Voter', voterSchema, 'Voters');
 module.exports = voterModel;

@@ -14,7 +14,6 @@
       justify-content: center;
       align-items: center;
     }
-
   </style>
 </head>
 
@@ -22,28 +21,29 @@
 
   <nav class="navbar navbar-expand-sm bg-primary border">
     <div class="nav-logo ms-5">
-        <div class="navbar-brand">
-            <img src="/img/logo.png" width="200px" height="auto">
-        </div>
+      <div class="navbar-brand">
+        <img src="/img/logo.png" width="200px" height="auto">
+      </div>
     </div>
-        <p class="text-white h5 mx-5">Voter Verification
-        </p>
-
+    <p class="text-white h5 ms-auto">Voter Verification
+    </p>
+    <a class="btn btn-warning ms-auto me-5" href="/voter/dashboard">Back to Dashboard</a>
   </nav>
 
   <div class="container w-75">
     <div class="row">
       <div class="col-sm-12">
         <h2 class=" h2 text-center mb-4">Enter Verification Code</h2>
-        <p class=" h6 text-center">It may take up to 1 - 2 minutes for you to receive the authentication code in your email.</p>
+        <p class=" h6 text-center">It may take up to 1 - 2 minutes for you to receive the authentication code in your
+          email.</p>
         <%- include('./partials/loginErrors.ejs') %>
           <form class="d-flex justify-content-center" method="post"
-            action="/voter/voteVerification?voterId=<%= voterId %>&electionId=<%= electionId %>">
+            action="/voter/voteVerification?voterId=<%= voterId %>&electionId=<%= electionId %>&newPasswordId=<%= newPasswordId %>&type=<%= type %>">
 
             <div class="row text-center p-0">
               <div class="col-sm-8 py-3">
-                <input type="text" class="form-control text-center" name="otp"
-                  placeholder="Enter code here" maxlength="6" required>
+                <input type="text" class="form-control text-center" name="otp" placeholder="Enter code here"
+                  maxlength="6" required>
               </div>
               <div class="col-sm-4 py-3">
                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
@@ -54,6 +54,12 @@
       </div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
