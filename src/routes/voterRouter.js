@@ -104,10 +104,10 @@ router.post('/vote', async (req, res) => {
         }
     })
 
-    res.render('voteVerification', { voterId: req.session.user.studentNumber, electionId: req.query.electionId, errors: [], type: req.query.type });
+    res.render('otpVerification', { voterId: req.session.user.studentNumber, electionId: req.query.electionId, errors: [], type: req.query.type });
 });
 
-router.post('/voteVerification', async (req, res) => {
+router.post('/otpVerification', async (req, res) => {
 
     const { otp } = req.body;
     console.log(req.query.type);
@@ -123,7 +123,7 @@ router.post('/voteVerification', async (req, res) => {
             res.redirect('/voter/dashboard')
         } else {
             console.log('Unverified')
-            res.render('voteVerification', { voterId: req.session.user.studentNumber,type: 'vote', electionId: req.query.electionId, errors: [{ msg: 'Invalid Authentication Code. Please try again.' }] });
+            res.render('otpVerification', { voterId: req.session.user.studentNumber,type: 'vote', electionId: req.query.electionId, errors: [{ msg: 'Invalid Authentication Code. Please try again.' }] });
         }
     } else if (req.query.type === 'changePassword') {
         const voterId = req.query.voterId;
@@ -132,12 +132,17 @@ router.post('/voteVerification', async (req, res) => {
         console.log(newPasswordId, newPassword.otp, otp)
         if (otp === newPassword.otp) {
             await Voters.findByIdAndUpdate(voterId, { password: newPassword.newPassword });
+            const otpTrash = await newPasswords.find({voterId: voterId});
+            console.log(otpTrash)
+            for (const otp of otpTrash){
+                await newPasswords.findByIdAndDelete(otp._id);
+            };
             console.log('correct otp');
             let error = 'Password successfully changed. Please login again.'
             res.redirect(`/voter?error=${error}`);
         } else {
             console.log('Wrong otp');
-            res.render('voteVerification', { voterId: voterId, type: 'changePassword', newPasswordId: newPasswordId, electionId: 'NULL', errors: [{msg: 'Invalid Authentication Code. Please try again.'}] });
+            res.render('otpVerification', { voterId: voterId, type: 'changePassword', newPasswordId: newPasswordId, electionId: 'NULL', errors: [{msg: 'Invalid Authentication Code. Please try again.'}] });
         }
     } else {
         console.log('No type');
@@ -247,7 +252,7 @@ router.post('/changePassword', async (req, res) => {
             }
         });
 
-        res.render('voteVerification', { voterId: req.query.voterId, errors: [], type: req.query.type, newPasswordId: newPasswordId, electionId: 'NULL', errors });
+        res.render('otpVerification', { voterId: req.query.voterId, errors: [], type: req.query.type, newPasswordId: newPasswordId, electionId: 'NULL', errors });
 
 
     }

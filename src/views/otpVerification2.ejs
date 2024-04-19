@@ -27,22 +27,22 @@
     </div>
     <p class="text-white h5 ms-auto">Voter Verification
     </p>
-    <a class="btn btn-warning ms-auto me-5" href="/voter/dashboard">Back to Dashboard</a>
+    <a class="btn btn-warning ms-auto me-5" href="/">Back to Home Page</a>
   </nav>
 
   <div class="container w-75">
     <div class="row">
       <div class="col-sm-12">
         <h2 class=" h2 text-center mb-4">Enter Verification Code</h2>
-        <p class=" h6 text-center">It may take up to 1 - 2 minutes for you to receive the authentication code in your
+        <p class=" h6 text-center">It may take up to 1 - 2 minutes for you to receive the verification code in your
           email.</p>
         <%- include('./partials/loginErrors.ejs') %>
           <form class="d-flex justify-content-center" method="post"
-            action="/voter/voteVerification?voterId=<%= voterId %>&electionId=<%= electionId %>&newPasswordId=<%= newPasswordId %>&type=<%= type %>">
+            action="/otpVerification?voterId=<%= voterId %>">
 
             <div class="row text-center p-0">
               <div class="col-sm-8 py-3">
-                <input type="text" class="form-control text-center" name="otp" placeholder="Enter code here"
+                <input type="text" class="form-control text-center" name="inputOTP" placeholder="Enter code here"
                   maxlength="6" required>
               </div>
               <div class="col-sm-4 py-3">
