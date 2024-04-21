@@ -57,7 +57,7 @@ router.get('/vote', async (req, res) => {
 });
 
 router.post('/vote', async (req, res) => {
-
+    try{
     var voterEmail = req.session.user.email;
     var voterFullName = req.session.user.firstName + ' ' + req.session.user.middleName + ' ' + req.session.user.lastName;
     const election = await Election.findById(req.query.electionId);
@@ -105,6 +105,9 @@ router.post('/vote', async (req, res) => {
     })
 
     res.render('otpVerification', { voterId: req.session.user.studentNumber, electionId: req.query.electionId, errors: [], type: req.query.type });
+}catch (error){
+    console.error(error);
+}
 });
 
 router.post('/otpVerification', async (req, res) => {
@@ -148,6 +151,16 @@ router.post('/otpVerification', async (req, res) => {
         console.log('No type');
         res.redirect('/')
     }
+});
+
+router.post('/cancelVote', async (req, res) => {
+    const studentNumber = req.query.studentNumber;
+    const electionId = req.query.electionId;
+    const castedVotes = await Votes.find({creator: studentNumber, electionId: electionId});
+    for (const vote of castedVotes){
+        await Votes.findByIdAndDelete(vote._id);
+    }
+    res.redirect('/voter/dashboard');
 })
 
 router.get('/viewFinalResults', async (req, res) => {

@@ -33,13 +33,15 @@
       </nav>
 
     <div class="container my-5" id="ballot-container">
-    <form action="/voter/vote?electionId=<%= election._id %>type=vote" method="post" class="form-group"> <% for (const ballot of ballots){ var positionCount=1; %>
+    <form action="/voter/vote?electionId=<%= election._id %>&type=vote" method="post" class="form-group"> <% for (const ballot of ballots){ var positionCount=1; %>
         <div class="card my-5">
             <div class="card-header bg-primary">
             <label class="form-label h3 text-white ms-3" for="option<%= positionCount %>">
                 <%= ballot.position %>
             </label>
             </div>
+
+            <% if (ballot.maxChoices === 1){ %>
             <div class="card-body">
             <% for (const option of ballot.candidates) { %>
                 <div class="form-check py-2 px-5">
@@ -51,6 +53,42 @@
                 </div>
                 <% } %>
             </div>
+
+            <% } else if (ballot.maxChoices > 1){ %>
+                <div class="card-body" id="checkboxgroup<%= ballot.position %>">
+                    <% for (const option of ballot.candidates) { %>
+                        <div class="form-check py-2 px-5">
+                            <input class="form-check-input form-control" type="checkbox" name="<%=ballot.position%>"
+                                id="<% ballot.position + option %>" value="<%=option%>">
+                            <label class="form-check-label ms-3 h5" for="<%=option%>">
+                                <%= option %>
+                            </label>
+                        </div>
+                    <% } %>
+                </div>
+                <script>
+                    function limitCheckBox() {
+                        var checkboxgroup = document.getElementById('checkboxgroup<%= ballot.position %>').getElementsByTagName("input");
+                        
+                        //Note #2 Change max limit here as necessary
+                        var limit = parseInt(<%= ballot.maxChoices %>);
+                        console.log(limit, checkboxgroup.length)
+                        for (var i = 0; i < checkboxgroup.length; i++) {
+                            checkboxgroup[i].onclick = function() {
+                                var checkedcount = 0;
+                                    for (var i = 0; i < checkboxgroup.length; i++) {
+                                    checkedcount += (checkboxgroup[i].checked) ? 1 : 0;
+                                }
+                                if (checkedcount > limit) {
+                                    alert("You can vote maximum of " + limit + " candidates only for this position.");
+                                    this.checked = false;
+                                }
+                            }
+                        }
+                    }
+                    limitCheckBox()
+                    </script>
+            <% } %>
         </div>
         <% positionCount++; } %>
         <div class="container text-end">

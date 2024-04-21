@@ -10,6 +10,10 @@ const ballotSchema = new mongoose.Schema({
         type: [String],
         required: true
     },
+    maxChoices: {
+        type: Number,
+        required: true
+    },
     creator: {
         type: String,
         required: true

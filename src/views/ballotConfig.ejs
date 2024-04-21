@@ -24,6 +24,12 @@
                 <div class="form-group">
                     <label for="position1" class="mt-5">Position Title:</label>
                     <input type="text" class="form-control position-title mb-3" name="position" required>
+
+                    <div class="form-group">
+                        <label for="maxChoices">Maximum Number of Choices:</label>
+                        <input type="number" class="form-control w-50" id="maxChoices" name="maxChoices" min="1" step="1" placeholder="Enter maximum number of choices" value="1" required>
+                    </div>
+
                     <label for="position1Candidates">Candidates (new line per candidate):</label>
                     <div id="position1Candidates">
                             <textarea  class="form-control mb-2" name="candidates" placeholder="example:

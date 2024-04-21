@@ -27,7 +27,7 @@
     </div>
     <p class="text-white h5 ms-auto">Voter Verification
     </p>
-    <a class="btn btn-warning ms-auto me-5" href="/voter/dashboard">Back to Dashboard</a>
+    <a class="btn btn-warning ms-auto me-5" href="/voter/cancelVote?studentNumber=<%= voterId %>&electionId=<%= electionId %>">Back to Dashboard</a>
   </nav>
 
   <div class="container w-75">
@@ -38,7 +38,7 @@
           email.</p>
         <%- include('./partials/loginErrors.ejs') %>
           <form class="d-flex justify-content-center" method="post"
-            action="/voter/otpVerification?voterId=<%= voterId %>&electionId=<%= electionId %>&newPasswordId=<%= newPasswordId %>&type=<%= type %>">
+            action="/voter/otpVerification?voterId=<%= voterId %>&electionId=<%= electionId %>&newPasswordId=<%= typeof newPasswordId != 'undefined' ? newPasswordId : 'NULL' %>&type=<%= type %>">
 
             <div class="row text-center p-0">
               <div class="col-sm-8 py-3">

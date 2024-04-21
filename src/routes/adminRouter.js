@@ -115,7 +115,6 @@ router.post('/createElection', async (req, res) => {
     let startDateTZ = moment.tz(startDate, 'Asia/Manila');
     let endDateTZ = moment.tz(endDate, 'Asia/Manila');
     let errors = [];
-
     if (startDateTZ.isBefore(currDate)) {
         errors.push({ msg: 'Invalid start date. Start date cannot be in the past.' });
     }
@@ -126,12 +125,12 @@ router.post('/createElection', async (req, res) => {
         errors.push({ msg: 'Invalid end date. End date cannot be before start date.' });
     }
     if (errors.length !== 0) {
-        res.render('electionTitle', { errors, exists, electionTitle });
+        console.log(exists, startDate, endDate)
+        res.render('electionTitle', { errors, exists, electionTitle, startDate, endDate, electionId: req.query.electionId });
     }
     else {
         try {
             let creatorEmail = req.session.user.email;
-            const exists = req.query.exists;
             if (exists == 'true') {
                 console.log('update');
                 await Election.findByIdAndUpdate(req.query.electionId, { electionTitle: electionTitle, startDate: startDateUTC, endDate: endDateUTC });
@@ -183,8 +182,10 @@ router.get('/deleteElection', async (req, res) => {
 
 router.get('/endElection', async (req, res) => {
     let electionId = req.query.electionId;
-    let now = new Date();
-    const currElection = await Election.findByIdAndUpdate(electionId, { endDate: now });
+    const timezoneOffset = 8;
+    let endDateObject = new Date();
+    const endDateUTC = new Date(endDateObject.getTime() + timezoneOffset * 60 * 60 * 1000).toISOString();
+    const currElection = await Election.findByIdAndUpdate(electionId, { endDate: endDateUTC });
     console.log(currElection.endDate, now)
     res.redirect('/admin/dashboard');
 });
@@ -199,14 +200,16 @@ router.get('/editBallot', async (req, res) => {
 
 router.post('/editBallot', async (req, res) => {
     const position = req.body.position;
-    const candidates = req.body.candidates.split('\r\n');
-    console.log(position, candidates);
+    const rawCandidates = req.body.candidates.split('\r\n');
+    const candidates = rawCandidates.filter(item => item !== "");
+    console.log(req.body, candidates);
     const electionTitle = req.query.electionTitle;
     let startDate = req.query.startDate;
     let endDate = req.query.endDate;
+    const maxChoices = req.body.maxChoices;
     const currElection = await Election.findById(req.query.electionId);
 
-    const newBallot = await Ballot.create({ position: position, candidates: candidates, creator: req.session.user.email });
+    const newBallot = await Ballot.create({ position: position, candidates: candidates, maxChoices: maxChoices, creator: req.session.user.email });
     currElection.ballots.push(newBallot._id);
 
     currElection.save();
@@ -504,7 +507,11 @@ router.post('/addVoters', async (req, res) => {
     }
     const newElectionBallots = await Ballot.find({ _id: { $in: currElection.ballots } });
     const newElectionVotersList = await Voters.find({ _id: { $in: currElection.voters } });
-    res.render('electionConfig', { electionTitle: currElection.electionTitle, startDate: currElection.startDate, endDate: currElection.endDate, electionId, electionVoters: newElectionVotersList, errors, ballots: newElectionBallots });
+    const startDateObject = new Date(currElection.startDate);
+    const startDate = startDateObject.toISOString().slice(0,-8);
+    const endDateObject = new Date(currElection.endDate);
+    const endDate = endDateObject.toISOString().slice(0,-8);
+    res.render('electionConfig', { electionTitle: currElection.electionTitle, startDate: startDate, endDate: endDate, electionId, electionVoters: newElectionVotersList, errors, ballots: newElectionBallots });
 
 });
 

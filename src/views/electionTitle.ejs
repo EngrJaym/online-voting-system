@@ -11,7 +11,7 @@
 
 <body>
     
-        <% if (exists === true){ %>
+        <% if (exists){ %>
           <nav class="navbar navbar-expand-sm bg-primary border">
             <div class="nav-logo ms-5">
               <div class="navbar-brand">
@@ -20,6 +20,7 @@
           </div>
           <p class="h5 ms-auto me-5 text-white">Update Election Settings</p>
           </nav>
+          <p class="h3 text-center mt-5">Update Election</p>
         <%} else { %>
         <nav class="navbar navbar-expand-sm navbar-dark border">
           <div class="nav-logo ms-5">
@@ -29,44 +30,40 @@
         </div>
         <p class="h5 ms-auto me-5">Create New Election</p>
         </nav>
+        <nav class="navbar navbar-expand-sm bg-primary">
+  
+          <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav py-2 mx-auto">
+              <li class="nav-item mx-5 my-auto">
+                <a class="btn-custom " href="/admin/dashboard">Dashboard</a>
+              </li>
+              <li class="nav-item mx-5 my-auto">
+                <a class="btn-custom  btn-active" href="/admin/createElection?exists=false">Create New Election</a>
+              </li>
+              <li class="nav-item mx-5 my-auto">
+                <a class="btn-custom" href="/admin/manageVoters">Registered Voters</a>
+              </li>
+              <li class="nav-item mx-5 my-auto">
+                <a class="btn-custom" href="/admin/votersRegistration">Voters Registration</a>
+              </li>
+              
+              <li class="nav-item mx-5 my-auto">
+                <a class="btn-custom" href="/admin/logout">Logout</a>
+              </li>
+    
+            </ul>
+          </div>
+        </nav>
+        <p class="h1 text-center mt-5">Create an Election</p>
         <% } %>
       
-      <% if (exists !== true) { %>
-      <nav class="navbar navbar-expand-sm bg-primary">
-  
-        <button type="button" class="navbar-toggler me-5" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav py-2 mx-auto">
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom " href="/admin/dashboard">Dashboard</a>
-            </li>
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom  btn-active" href="/admin/createElection?exists=false">Create New Election</a>
-            </li>
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom" href="/admin/manageVoters">Registered Voters</a>
-            </li>
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom" href="/admin/votersRegistration">Voters Registration</a>
-            </li>
-            
-            <li class="nav-item mx-5 my-auto">
-              <a class="btn-custom" href="/admin/logout">Logout</a>
-            </li>
-  
-          </ul>
-        </div>
-      </nav>
-      <p class="h1 text-center mt-5">Create an Election</p>
       
-    <% } else {%>
-        <p class="h3 text-center mt-5">Update Election</p>
-    <% } %>
     <div class="container px-auto w-50 my-5">
-
-        <form method="post" class="form-group" <% if (exists === true){ %>
+      <% console.log(exists) %>
+        <form method="post" class="form-group" <% if (exists){ %>
             action="/admin/createElection?exists=true&electionId=<%= electionId %>"
                 <% } else {%>
                     action="/admin/createElection?exists=false"
