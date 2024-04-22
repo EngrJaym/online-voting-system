@@ -76,7 +76,12 @@
                 const utcDate = new Date();
                 const timezoneOffsetInMinutes = utcDate.getTimezoneOffset();
                 const now2 = new Date(utcDate.getTime() - (timezoneOffsetInMinutes * 60000));
-                const now = new Date();
+
+                const timeZone = 'Asia/Manila'; // Example: Eastern Time Zone
+                const currentTime = new Date().toLocaleString('en-US', { timeZone });
+                const nowString = new Date(currentTime).toISOString();
+                const now = new Date(nowString);
+
                 for (const election of invitedElections){
 
                 const ISOStartDate = election.startDate.toISOString().slice(0,16);
