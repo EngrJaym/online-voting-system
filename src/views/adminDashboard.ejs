@@ -74,7 +74,8 @@
 
         const timeZone = 'Asia/Manila'; // Example: Eastern Time Zone
         const currentTime = new Date().toLocaleString('en-US', { timeZone });
-        const now = new Date(currentTime).toISOString();
+        const nowString = new Date(currentTime).toISOString();
+        const now = new Date(nowString);
 
         for (const election of elections){
           
