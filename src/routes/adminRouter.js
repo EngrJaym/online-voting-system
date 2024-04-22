@@ -294,7 +294,7 @@ router.post('/registerVoters', async (req, res) => {
                     
                     Please use the following steps to access your account:
                     
-                    1. Visit the Voting System login page at www.digivote.urs.edu
+                    1. Visit the Voting System login page at https://online-voting-system-bdmw.onrender.com
                     2. Enter your student number and the temporary password provided above.
                     3. Upon logging in, you can change your account's password.
                     
@@ -393,7 +393,7 @@ router.post('/registerVotersBatch', uploads.single('file'), async (req, res) => 
                             
                             Please use the following steps to access your account:
                             
-                            1. Visit the Voting System login page at www.digivote.urs.edu
+                            1. Visit the Voting System login page at https://online-voting-system-bdmw.onrender.com
                             2. Enter your student number and the temporary password provided above.
                             3. Upon logging in, you can change your account's password.
                             
