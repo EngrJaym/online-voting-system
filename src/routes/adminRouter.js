@@ -106,7 +106,7 @@ router.post('/createElection', async (req, res) => {
     const { startDate, endDate, electionTitle } = req.body;
     const startDateObject = new Date(startDate);
     const endDateObject = new Date(endDate);
-    const timezoneOffset = 8;
+    const timezoneOffset = 0;
     const startDateUTC = new Date(startDateObject.getTime() + timezoneOffset * 60 * 60 * 1000).toISOString();
     const endDateUTC = new Date(endDateObject.getTime() + timezoneOffset * 60 * 60 * 1000).toISOString();
     console.log(startDate, endDate, startDateUTC, endDateUTC);
