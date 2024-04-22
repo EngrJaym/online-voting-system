@@ -187,7 +187,6 @@ router.get('/endElection', async (req, res) => {
     let endDateObject = new Date();
     const endDateUTC = new Date(endDateObject.getTime() + timezoneOffset * 60 * 60 * 1000).toISOString();
     const currElection = await Election.findByIdAndUpdate(electionId, { endDate: endDateUTC });
-    console.log(currElection.endDate, now)
     res.redirect('/admin/dashboard');
 });
 
