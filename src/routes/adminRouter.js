@@ -109,7 +109,8 @@ router.post('/createElection', async (req, res) => {
     const timezoneOffset = 8;
     const startDateUTC = new Date(startDateObject.getTime() + timezoneOffset * 60 * 60 * 1000).toISOString();
     const endDateUTC = new Date(endDateObject.getTime() + timezoneOffset * 60 * 60 * 1000).toISOString();
-
+    console.log(startDate, endDate, startDateUTC, endDateUTC);
+    
     const exists = req.query.exists;
     let currDate = moment().tz('Asia/Manila');
     let startDateTZ = moment.tz(startDate, 'Asia/Manila');
