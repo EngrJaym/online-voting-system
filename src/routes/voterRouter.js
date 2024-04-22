@@ -153,7 +153,7 @@ router.post('/otpVerification', async (req, res) => {
     }
 });
 
-router.post('/cancelVote', async (req, res) => {
+router.get('/cancelVote', async (req, res) => {
     const studentNumber = req.query.studentNumber;
     const electionId = req.query.electionId;
     const castedVotes = await Votes.find({creator: studentNumber, electionId: electionId});
