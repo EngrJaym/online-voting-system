@@ -70,7 +70,8 @@
         };
         const utcDate = new Date();
         const timezoneOffsetInMinutes = utcDate.getTimezoneOffset();
-        const now = new Date(utcDate.getTime() - (timezoneOffsetInMinutes * 60000));
+        const now2 = new Date(utcDate.getTime() - (timezoneOffsetInMinutes * 60000));
+        const now = new Date();
 
         for (const election of elections){
 
