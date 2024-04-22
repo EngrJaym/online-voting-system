@@ -72,7 +72,6 @@
         const timezoneOffsetInMinutes = utcDate.getTimezoneOffset();
         const now = new Date(utcDate.getTime() - (timezoneOffsetInMinutes * 60000));
 
-
         for (const election of elections){
 
           const ISOStartDate = election.startDate.toISOString().slice(0,16);
