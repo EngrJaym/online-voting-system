@@ -138,13 +138,13 @@ router.post('/createElection', async (req, res) => {
                 const updatedElection = await Election.findById(req.query.electionId);
                 const existingElectionBallots = await Ballot.find({ _id: { $in: updatedElection.ballots } });
                 const existingElectionVotersList = await Voters.find({ _id: { $in: updatedElection.voters } });
-                res.render('electionConfig', { electionTitle: updatedElection.electionTitle, startDate: startDate, endDate: endDate, electionId: updatedElection._id, electionVoters: existingElectionVotersList, ballots: existingElectionBallots });
+                res.render('electionConfig', { electionTitle: updatedElection.electionTitle, startDate: updatedElection.startDate, endDate: updatedElection.endDate, electionId: updatedElection._id, electionVoters: existingElectionVotersList, ballots: existingElectionBallots });
             } else {
                 console.log('create')
                 const newElection = await Election.create({ electionTitle: electionTitle, startDate: startDateUTC, endDate: endDateUTC, creator: creatorEmail });
                 const newElectionBallots = await Ballot.find({ _id: { $in: newElection.ballots } });
                 console.log(newElection.startDate, newElection.endDate)
-                res.render('electionConfig', { electionTitle: newElection.electionTitle, startDate: startDate, endDate: endDate, electionId: newElection._id, electionVoters: newElection.voters, ballots: newElectionBallots });
+                res.render('electionConfig', { electionTitle: newElection.electionTitle, startDate: newElection.startDate, endDate: newElection.endDate, electionId: newElection._id, electionVoters: newElection.voters, ballots: newElectionBallots });
             }
         } catch (error) {
             console.error("Error creating election: ", error);
