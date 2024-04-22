@@ -78,8 +78,8 @@
 
           const ISOStartDate = election.startDate.toISOString().slice(0,16);
           const ISOEndDate = election.endDate.toISOString().slice(0,16);
-          const localStartDate = new Date(ISOStartDate).toLocaleString('en-US', options);
-          const localEndDate = new Date(ISOEndDate).toLocaleString('en-US', options);
+          const localStartDate = new Date(election.startDate).toLocaleString('en-US', options);
+          const localEndDate = new Date(election.endDate).toLocaleString('en-US', options);
           
         if (now < election.startDate){ 
           var status='UPCOMING' ; var btn='Update' ; var
